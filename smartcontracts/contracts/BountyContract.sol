@@ -9,6 +9,10 @@ import 'hardhat/console.sol';
 import { PGBountyState, IPGBountiesHandler } from './interfaces/IPGBountiesHandler.sol';
 
 contract BountyContract is ERC721URIStorage {
+
+  error BountyDoesntExist();
+  error BountyIsNotOpened();
+
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
 
@@ -33,7 +37,14 @@ contract BountyContract is ERC721URIStorage {
     uint256 reward,
     string criteria,
     string description,
+    string attestationHash,
     PGBountyState state
+  );
+
+  event ProofSubmitted(
+    uint256 indexed tokenId,
+    address indexed contributor,
+    string attestationHash
   );
 
   constructor() ERC721('Token', 'NFT') {
@@ -58,6 +69,19 @@ contract BountyContract is ERC721URIStorage {
     return newTokenId;
   }
 
+  function submitProof(uint256 _bountyId, string memory _attestationHash) external {
+    Bounty storage bounty = idBounty[bountyId];
+    if (bounty.owner == address(0)) revert BountyDoesntExist();
+    if (!bounty.state != PGBountyState.OPEN) revert BountyIsNotOpened();
+
+    bounty.attestationHash = _attestationHash;
+    bounty.state = PGBountyState.SUBMITTED;
+    // TODO: set new timer
+    bounty.contributor = msg.sender;
+
+    emit ProofSubmitted(bountyId, msg.sender, attestationHash);
+  }
+
   function createBounty(
     uint256 tokenId,
     uint256 reward,
@@ -71,6 +95,7 @@ contract BountyContract is ERC721URIStorage {
       reward,
       criteria,
       description,
+      "",
       PGBountyState.OPEN
     );
   }
