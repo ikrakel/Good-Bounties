@@ -13,7 +13,7 @@ enum PGBountyState {
 
 interface IPGBountiesHandler {
     function openBounty() external returns (uint256); // anyone (bounty owner)
-    function submitProof(uint256 _bountyId, string memory _attestationHash) external; // anyone (contributor)
+    function submitProof(uint256 _bountyId, string calldata _attestationHash) external; // anyone (contributor)
     function validateProof(uint256 _bountyId) external; // onlyBountyOwner
     function denyProof(uint256 _bountyId) external; // onlyBountyOwner
     function disputeBounty(uint256 _bountyId) external; // onlyBountyContributor

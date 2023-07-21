@@ -12,6 +12,7 @@ contract BountyContract is ERC721URIStorage {
 
   error BountyDoesntExist();
   error BountyIsNotOpened();
+  error BountyHasExpired();
 
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
@@ -22,11 +23,15 @@ contract BountyContract is ERC721URIStorage {
 
   struct Bounty {
     uint256 tokenId;
+    uint256 reward;
+    uint256 submissionDeadline;
+    uint256 verificationPeriod;
+    uint256 submittedTimestamp;
     address payable owner;
     address payable contributor;
-    uint256 reward;
-    string criteria;
-    string description;
+    string attestationHash;
+    //string criteria; TODO: I think these fields must be stored in ipfs
+    //string description;
     PGBountyState state;
   }
 
@@ -35,8 +40,8 @@ contract BountyContract is ERC721URIStorage {
     address owner,
     address contributor,
     uint256 reward,
-    string criteria,
-    string description,
+    //string criteria,
+    //string description,
     string attestationHash,
     PGBountyState state
   );
@@ -53,8 +58,10 @@ contract BountyContract is ERC721URIStorage {
 
   function openBounty(
     uint256 reward,
-    string calldata criteria,
-    string calldata description
+    uint256 submissionDeadline,
+    uint256 verificationPeriod
+    //string calldata criteria,
+    //string calldata description
   ) public payable returns (uint256) {
     require(reward > 0, 'The reward must be bigger than 0.');
 
@@ -64,20 +71,21 @@ contract BountyContract is ERC721URIStorage {
 
     _mint(msg.sender, newTokenId);
 
-    createBounty(newTokenId, reward, criteria, description);
+    createBounty(newTokenId, reward, submissionDeadline, verificationPeriod);
 
     return newTokenId;
   }
 
-  function submitProof(uint256 _bountyId, string memory _attestationHash) external {
+  function submitProof(uint256 _bountyId, string calldata _attestationHash) external {
     Bounty storage bounty = idBounty[bountyId];
     if (bounty.owner == address(0)) revert BountyDoesntExist();
     if (!bounty.state != PGBountyState.OPEN) revert BountyIsNotOpened();
+    if (block.timestamp > bounty.submissionDeadline) revert BountyHasExpired();
 
     bounty.attestationHash = _attestationHash;
     bounty.state = PGBountyState.SUBMITTED;
-    // TODO: set new timer
     bounty.contributor = msg.sender;
+    bounty.submittedTime = block.timestamp;
 
     emit ProofSubmitted(bountyId, msg.sender, attestationHash);
   }
@@ -85,16 +93,21 @@ contract BountyContract is ERC721URIStorage {
   function createBounty(
     uint256 tokenId,
     uint256 reward,
-    string calldata criteria,
-    string calldata description
+    uint256 submissionDeadline,
+    uint256 verificationPeriod
+    // string calldata criteria,
+    // string calldata description
   ) private {
     idBounty[tokenId] = Bounty(
       tokenId,
+      reward,
+      submissionDeadline,
+      verificationPeriod,
+      0,
       payable(msg.sender),
       payable(address(0)),
-      reward,
-      criteria,
-      description,
+      // criteria,
+      // description,
       "",
       PGBountyState.OPEN
     );
