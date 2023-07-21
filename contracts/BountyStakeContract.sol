@@ -60,18 +60,32 @@ contract BountyStakeContract is IBountyStakeContract {
     // TODO: Add the require below once we have a collection ready
     // require(ERC721(bountyNFT).statusOf(_tokenId) == "complete", "Bounty's state does not allow withdrawls");
 
+    // TODO: Depending on the state of bounty it should be withdrawn for the staker or for the contributor
+    // _withdrawForContributors(_tokenId, msg.sender);
+    _withdrawForStakers(_tokenId, msg.sender);
+  }
+
+  function _withdrawForContributors(uint _tokenId, address _claimer) internal {
+    // TODO: Add a lookup if the user has contributed to the bounty
+
+    uint availableForBounty = totalStakesPerTokenId[_tokenId];
+    totalStakesPerTokenId[_tokenId] = 0;
+
+    payable(_claimer).transfer(availableForBounty);
+  }
+
+  function _withdrawForStakers(uint _tokenId, address _claimer) internal {
     uint stakeAmount = stakes[_tokenId][msg.sender];
     require(stakeAmount > 0, "No funds to withdraw");
 
     // Reset the stake to 0
-    stakes[_tokenId][msg.sender] = 0;
+    stakes[_tokenId][_claimer] = 0;
     totalStakesPerTokenId[_tokenId] -= stakeAmount;
 
     // Transfer the stake back to the user
     // TODO: Add a lookup to the amount that we should split between the user and the pool
     uint amountToWithdraw = stakeAmount / 2;
     IBountyRewardPool(bountyRewardPool).contribute{value: amountToWithdraw}();
-    payable(msg.sender).transfer(amountToWithdraw);
+    payable(_claimer).transfer(amountToWithdraw);
   }
 }
-

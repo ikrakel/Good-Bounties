@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 /*
 * The BountyRewardPool contract is a pool of funds intended to reward users who have
-* completed their bountys. Users (or any other participants) can contribute to the pool.
+* completed their bounties. Users (or any other participants) can contribute to the pool.
 * When a bounty (represented by an NFT) is completed, the user who owns the bounty can claim
 * a reward from the pool.
 *
