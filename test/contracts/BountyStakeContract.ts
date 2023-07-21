@@ -4,7 +4,7 @@ import { solidity } from "ethereum-waffle";
 
 import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
-import type { BountyStakeContract } from "../../typechain-types";
+import type { BountyStakeContract, BountyRewardPool } from "../../typechain-types";
 import { Artifacts } from "../shared";
 
 chai.use(solidity);
@@ -19,6 +19,7 @@ describe("BountyStakeContract", () => {
   let addr2: SignerWithAddress;
 
   let bountyStakeContract: BountyStakeContract;
+  let bountyRewardContract: BountyRewardPool;
 
   beforeEach(async () => {
     [creator, addr1, addr2] = await ethers.getSigners();
@@ -26,8 +27,10 @@ describe("BountyStakeContract", () => {
 
   it("can be deployed", async () => {
     // TODO: Add an actual ERC721 deploy here and replace the address below
+    bountyRewardContract = await deployContract(creator, Artifacts.BountyRewardPool, ["0x33041027dd8F4dC82B6e825FB37ADf8f15d44053"]);
     const action = deployContract(creator, Artifacts.BountyStakeContract, [
       "0x33041027dd8F4dC82B6e825FB37ADf8f15d44053",
+      bountyRewardContract.address
     ]);
 
     await expect(action).not.to.be.reverted;
@@ -37,6 +40,7 @@ describe("BountyStakeContract", () => {
     // TODO: Add an actual ERC721 deploy here and replace the address below
     return deployContract(creator, Artifacts.BountyStakeContract, [
       "0x33041027dd8F4dC82B6e825FB37ADf8f15d44053",
+      bountyRewardContract.address
     ]) as Promise<BountyStakeContract>;
   };
 
@@ -46,6 +50,7 @@ describe("BountyStakeContract", () => {
 
   describe("functions", () => {
     beforeEach(async () => {
+      bountyRewardContract = await deployContract(creator, Artifacts.BountyRewardPool, ["0x33041027dd8F4dC82B6e825FB37ADf8f15d44053"]);
       bountyStakeContract = await builder();
     });
 

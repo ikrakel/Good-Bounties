@@ -1,18 +1,18 @@
 import { ethers, network } from "hardhat";
 
-import { deployBountyStakeContract } from "./shared";
+import { deployBountyRewardPool } from "./shared";
 
 async function main() {
-  console.log(`Deploying Bounty Stake Contract to ${network.name}`);
+  console.log(`Deploying Bounty Reward Contract to ${network.name}`);
 
   const [creator] = await ethers.getSigners();
 
   console.log(`Owner will be ${creator.address}`);
 
   // Replace address with those of the Bounty handler + Bounty Reward Pool
-  const bountyStakeContract = await deployBountyStakeContract("0x33041027dd8F4dC82B6e825FB37ADf8f15d44053", "0x33041027dd8F4dC82B6e825FB37ADf8f15d44053");
+  const bountyRewardContract = await deployBountyRewardPool();
 
-  console.log(`Bounty Stake Contract: ${bountyStakeContract.address}`);
+  console.log(`Bounty Reward Contract: ${bountyRewardContract.address}`);
 
   console.log("Done");
 }
