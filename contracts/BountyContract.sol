@@ -40,7 +40,7 @@ contract BountyContract is ERC721URIStorage {
     owner = payable(msg.sender);
   }
 
-  function createToken(
+  function openBounty(
     uint256 reward,
     string calldata criteria,
     string calldata description
