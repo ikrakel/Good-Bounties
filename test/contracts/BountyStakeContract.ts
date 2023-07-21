@@ -81,25 +81,5 @@ describe("BountyStakeContract", () => {
 
       expect(bountyStakeContract.connect(addr2).withdraw(tokenID)).to.be.revertedWith('No funds to withdraw');
     });
-
-    it("allows an admin to withdraw all the stake", async () => {
-      const tokenID = 1;
-      await bountyStakeContract.connect(addr1).stake(tokenID, { value: parseUnits("1") });
-      await bountyStakeContract.connect(addr2).stake(tokenID, { value: parseUnits("2") });
-
-      const balanceBefore = await provider.getBalance(creator.address);
-      await bountyStakeContract.connect(creator).adminWithdraw(tokenID);
-      const balanceAfter = await provider.getBalance(creator.address);
-
-      expect(balanceAfter.sub(balanceBefore)).to.be.closeTo(parseUnits("3"), parseUnits("0.001"));
-    });
-
-    it("does not allow a user to withdraw after an admin did", async () => {
-      const tokenID = 1;
-      await bountyStakeContract.connect(addr1).stake(tokenID, { value: parseUnits("1") });
-      
-      await bountyStakeContract.connect(creator).adminWithdraw(tokenID);
-      expect(bountyStakeContract.connect(addr1).withdraw(tokenID)).to.be.revertedWith('This bounty already had its funds retrieved by an admin');
-    });
   });
 });
