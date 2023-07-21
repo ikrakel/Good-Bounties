@@ -5,13 +5,16 @@ pragma solidity ^0.8.3;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 /*
+* The GoalStakeContract is designed to facilitate staking on NFT goals. Each NFT
+* represents a unique goal created by users. Multiple users can stake Ether on these
+* goals. Stakes are tied to both the goal (identified by its token ID) and the address
+* of the user who stakes.
 *
+* Users can stake multiple times on the same goal, and their total stake is tracked.
+* When the goal is completed, users can withdraw their stakes.
 *
-*
-*
-*
-*
-*
+* Note: Interactions with the GoalNFT contract (e.g., checking goal ownership and status)
+* are stubbed out and should be completed according to the specific ERC721 contract implementation.
 */
 
 contract GoalStakeContract {
