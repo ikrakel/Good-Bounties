@@ -6,7 +6,7 @@ import '@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol';
 import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
 
 import 'hardhat/console.sol';
-import { PGBountyState } from './interfaces/IPGBountiesHandler.sol';
+import { PGBountyState, IPGBountiesHandler } from './interfaces/IPGBountiesHandler.sol';
 
 contract BountyContract is ERC721URIStorage {
   using Counters for Counters.Counter;
@@ -85,5 +85,24 @@ contract BountyContract is ERC721URIStorage {
       description,
       PGBountyState.OPEN
     );
+  }
+
+  function fetchBounties() public view returns (Bounty[] memory) {
+    uint256 itemCount = _tokenIds.current();
+    uint256 currentIndex = 0;
+
+    Bounty[] memory items;
+
+    for (uint256 i = 0; i < itemCount; i++) {
+      if (idBounty[i + 1].state == PGBountyState.OPEN) {
+        uint256 currentId = i + 1;
+
+        Bounty storage currentItem = idBounty[currentId];
+        items[currentIndex] = currentItem;
+        currentIndex += 1;
+      }
+    }
+
+    return items;
   }
 }
