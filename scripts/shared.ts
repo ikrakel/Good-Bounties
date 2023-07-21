@@ -2,7 +2,7 @@ import { ethers } from "hardhat";
 
 import type {
   ERC20Mock,
-  GoalStakeContract
+  BountyStakeContract
 } from "../typechain-types";
 
 export async function deployERC20Mock(name: string, symbol: string): Promise<ERC20Mock> {
@@ -14,11 +14,11 @@ export async function deployERC20Mock(name: string, symbol: string): Promise<ERC
   return erc20 as ERC20Mock;
 }
 
-export async function deployGoalStakeContract(address: string): Promise<GoalStakeContract> {
-  const GoalStakeContract = await ethers.getContractFactory("ERC20Mock");
+export async function deployBountyStakeContract(address: string): Promise<BountyStakeContract> {
+  const BountyStakeContract = await ethers.getContractFactory("ERC20Mock");
 
-  const goalStakeContract = await GoalStakeContract.deploy(address);
-  await goalStakeContract.deployed();
+  const bountyStakeContract = await BountyStakeContract.deploy(address);
+  await bountyStakeContract.deployed();
 
-  return goalStakeContract as GoalStakeContract;
+  return bountyStakeContract as BountyStakeContract;
 }
