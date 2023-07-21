@@ -73,18 +73,6 @@ contract BountyContract is ERC721URIStorage {
       description,
       PGBountyState.OPEN
     );
-
-    _transfer(msg.sender, address(this), tokenId);
-
-    emit idBountyCreated(
-      tokenId,
-      msg.sender,
-      address(0),
-      reward,
-      criteria,
-      description,
-      PGBountyState.OPEN
-    );
   }
 
   function fetchBounties() public view returns (Bounty[] memory) {
