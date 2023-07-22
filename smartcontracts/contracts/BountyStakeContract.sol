@@ -3,6 +3,7 @@
 pragma solidity ^0.8.19;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import {PGBountyState, BountyContract} from "./BountyContract.sol";
 
 /*
  * The BountyStakeContract is designed to facilitate staking on NFT Bounties. Each NFT
@@ -64,8 +65,7 @@ contract BountyStakeContract is IBountyStakeContract {
     function stake(
         uint256 _tokenId
     ) external payable override(IBountyStakeContract) {
-        // TODO: Add the require below once we have a collection ready
-        // require(ERC721(bountyNFT).ownerOf(_tokenId) != address(0), "Bounty does not exist");
+        require(BountyContract(bountyNFT).ownerOf(_tokenId) != address(0), "Bounty does not exist");
         require(msg.value > 0, "Stake must be greater than 0");
 
         // Add the new stake to the mapping
@@ -78,28 +78,37 @@ contract BountyStakeContract is IBountyStakeContract {
     function withdraw(
         uint256 _tokenId
     ) external override(IBountyStakeContract) {
-        // TODO: Add the require below once we have a collection ready
-        // require(ERC721(bountyNFT).statusOf(_tokenId) == "complete", "Bounty's state does not allow withdrawls");
+        require(BountyContract(bountyNFT).ownerOf(_tokenId) != address(0), "Bounty does not exist");
+        BountyContract.Bounty memory bounty = BountyContract(bountyNFT).fetchBounty(_tokenId);
 
-        // TODO: Depending on the state of bounty it should be withdrawn for the staker or for the contributor
-        // _withdrawForContributors(_tokenId, msg.sender);
-        _withdrawForStakers(_tokenId, msg.sender);
+        require(bounty.state == PGBountyState.VALIDATED || bounty.state == PGBountyState.EXPIRED, "Bounty's state does not allow withdrawls");
+
+        if(bounty.state == PGBountyState.VALIDATED) {
+            _withdrawForContributors(_tokenId, msg.sender, bounty);
+        }
+
+        if(bounty.state == PGBountyState.EXPIRED) {
+            _withdrawForStakers(_tokenId, msg.sender);
+        }
     }
 
     function _withdrawForContributors(
         uint256 _tokenId,
-        address _claimer
+        address _claimer,
+        BountyContract.Bounty memory bounty
     ) internal {
-        // TODO: Add a lookup if the user has contributed to the bounty
+        require(bounty.contributor == _claimer, "Only the contributor can withdraw");
+        require(totalStakesPerTokenId[_tokenId] > 0, "No funds to withdraw");
 
         uint256 availableForBounty = totalStakesPerTokenId[_tokenId];
         totalStakesPerTokenId[_tokenId] = 0;
 
+        BountyContract(bountyNFT).claimBounty(_tokenId);
         payable(_claimer).transfer(availableForBounty);
     }
 
     function _withdrawForStakers(uint256 _tokenId, address _claimer) internal {
-        uint256 stakeAmount = stakes[_tokenId][msg.sender];
+        uint256 stakeAmount = stakes[_tokenId][_claimer];
         require(stakeAmount > 0, "No funds to withdraw");
 
         // Reset the stake to 0
