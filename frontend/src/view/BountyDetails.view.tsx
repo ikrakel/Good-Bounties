@@ -17,7 +17,6 @@ import { MATIC_PRICE } from "../data/Constants";
 
 import { useWeb3Auth } from "../contexts/Web3AuthProvider";
 import { ValidateModal } from "../components/ValidateModal";
-import { SubmitModal } from "../components/SubmitModal";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { SubmissionModal } from "../components/SubmissionModal";
 
