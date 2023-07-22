@@ -1,5 +1,5 @@
-import { Autocomplete, Box, Chip, Divider, Input, Select, TextField, Typography, useTheme } from "@mui/joy";
-import { StatusColors, StatusEnum } from "../models/StatusEnum";
+import { Autocomplete, Box, Chip, Divider, Grid, Input, Select, TextField, Typography, useTheme } from "@mui/joy";
+import { StatusColors, StatusEnum, StatusOptions } from "../models/StatusEnum";
 import { Text } from "../components/Text";
 import { Flex } from "../components/Common/Flex";
 import { Close } from "@mui/icons-material";
@@ -43,6 +43,9 @@ export const MainView = () => {
 
   //Bounty ID. Set to undefined to close the modal, or to a Bounty ID to open it
   const [donateModalBounty, setDonateModalBounty] = useState<Bounty>();
+  const [statusFilter, setStatusFilter] = useState<{ id: string; label: string }>();
+  const [locationFilter, setLocationFilter] = useState<string>();
+  const [search, setSearch] = useState<string>();
 
   const { data: allBounties, refetch } = useQuery(
     ["getBounties"],
@@ -64,6 +67,26 @@ export const MainView = () => {
     return wallet.substring(0, 6) + "..." + wallet.substring(wallet.length - 4, wallet.length);
   };
 
+  const filteredBounties = useMemo(() => {
+    if (!allBounties) return [];
+
+    let filtered = allBounties;
+
+    if (statusFilter) {
+      filtered = filtered.filter((bounty) => bounty.status === statusFilter.id);
+    }
+
+    if (locationFilter) {
+      filtered = filtered.filter((bounty) => bounty.location === locationFilter);
+    }
+
+    if (search) {
+      filtered = filtered.filter((bounty) => bounty.title.toLowerCase().includes(search.toLowerCase()));
+    }
+
+    return filtered;
+  }, [allBounties, locationFilter, search, statusFilter]);
+
   return (
     <>
       {donateModalBounty && (
@@ -77,63 +100,55 @@ export const MainView = () => {
       )}
       <Text type="header">Discover</Text>
       <Flex x yc gap3 my={2}>
-        <Input variant="soft" placeholder="Search" />
+        <Input variant="soft" placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)} />
 
         <Autocomplete
           variant="soft"
           placeholder="Filter by status"
-          disableClearable
-          options={Object.values(StatusEnum)}
+          options={StatusOptions}
+          value={statusFilter}
+          onChange={(e, val) => setStatusFilter(val || undefined)}
         />
 
         <Autocomplete
           variant="soft"
           placeholder="Filter by country"
           options={Countries.map((country) => country.name)}
+          value={locationFilter}
+          onChange={(e, val) => setLocationFilter(val || undefined)}
         />
       </Flex>
 
-      <Box
+      <Grid
+        container
+        spacing={4}
         sx={{
           backgroundColor: theme.palette.background.level1,
+          m: "auto",
           mx: -4,
           py: 4,
           mb: -4,
-          px: 4,
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(330px, 1fr))",
-          gap: 2,
         }}
       >
-        {allBounties.map((bounty: any, i) => (
-          <BountyCard
-            tokenId={bounty.tokenId}
-            imageUrl={bounty.imageUrl || placeholder}
-            key={bounty.tokenId}
-            deadline={getDate(bounty)}
-            title={bounty.title}
-            location={bounty.location}
-            totalStaked={bounty.totalStaked}
-            status={bounty.status}
-            upvotesCount={0}
-            createdBy={getShortWallet(bounty)}
-            submitterAvatar={"https://i.pravatar.cc/50?u=" + bounty.submitterName}
-            onClickDonate={() => setDonateModalBounty(bounty)}
-          />
+        {filteredBounties.map((bounty: any, i) => (
+          <Grid xs={4}>
+            <BountyCard
+              tokenId={bounty.tokenId}
+              imageUrl={bounty.imageUrl || placeholder}
+              key={bounty.tokenId}
+              deadline={getDate(bounty)}
+              title={bounty.title}
+              location={bounty.location}
+              totalStaked={bounty.totalStaked}
+              status={bounty.status}
+              upvotesCount={0}
+              createdBy={getShortWallet(bounty)}
+              submitterAvatar={"https://i.pravatar.cc/50?u=" + bounty.submitterName}
+              onClickDonate={() => setDonateModalBounty(bounty)}
+            />
+          </Grid>
         ))}
-      </Box>
-      {/* <Flex
-        x
-        xsa
-        gap3
-        flexWrap="wrap"
-        sx={{
-          backgroundColor: theme.palette.background.level1,
-          mx: -4,
-          py: 4,
-          mb: -4,
-        }}
-      ></Flex> */}
+      </Grid>
     </>
   );
 };

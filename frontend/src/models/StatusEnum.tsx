@@ -1,15 +1,19 @@
 export const StatusOptions = [
-  { id: 0, label: "Open" },
-  { id: 1, label: "Submitted" },
-  { id: 2, label: "Expired" },
-  { id: 3, label: "Completed" },
+  { label: "Open", id: "0" },
+  { label: "Submitted", id: "1" },
+  { label: "Validated", id: "2" },
+  { label: "Disputed", id: "3" },
+  { label: "Claimed", id: "4" },
+  { label: "Expired", id: "5" },
 ];
 
 export const StatusLabelToEnum = {
   Open: 0,
   Submitted: 1,
-  Expired: 2,
-  Completed: 3,
+  Validated: 2,
+  Disputed: 3,
+  Claimed: 4,
+  Expired: 5,
 };
 
 export enum StatusEnum {
@@ -20,8 +24,10 @@ export enum StatusEnum {
 }
 
 export const StatusColors = {
-  0: "purple",
-  1: "blue",
-  2: "red",
-  3: "green",
+  "0": "purple",
+  "1": "blue",
+  "2": "green",
+  "3": "red",
+  "4": "green",
+  "5": "red",
 };

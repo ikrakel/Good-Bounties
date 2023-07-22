@@ -4,7 +4,7 @@ import { Text } from "../components/Text";
 import { useMemo, useState, useEffect } from "react";
 import { Flex } from "../components/Common/Flex";
 import { Button, Chip, CircularProgress, Divider, Grid, Tab, TabList, TabPanel, Tabs, useTheme } from "@mui/joy";
-import { StatusColors, StatusEnum } from "../models/StatusEnum";
+import { StatusColors, StatusEnum, StatusOptions } from "../models/StatusEnum";
 import { differenceInDays } from "date-fns";
 import { LocationOn } from "@mui/icons-material";
 import { DonateModal } from "../components/DonateModal";
@@ -48,13 +48,6 @@ const GET_BOUNTIES = gql`
   }
 `;
 
-const stateToStatus = {
-  0: "Open",
-  1: "Submitted",
-  2: "Expired",
-  3: "Completed",
-};
-
 export const BountyDetailsView = () => {
   const params = useParams();
   const theme = useTheme();
@@ -70,6 +63,10 @@ export const BountyDetailsView = () => {
     const result = await execute(GET_BOUNTIES, { tokenId: Number(params.id) });
     return result?.data?.bounty as Bounty;
   });
+
+  const status = useMemo(() => {
+    return StatusOptions.find((status) => status.id === bounty?.status)?.label;
+  }, [bounty]);
 
   if (!bounty)
     return (
@@ -110,7 +107,7 @@ export const BountyDetailsView = () => {
           <Grid xs={5} container rowSpacing={8} height={"80%"} my={"auto"} px={4}>
             <Grid xs={12}>
               <Text sx={{ color: StatusColors[bounty.status as keyof typeof StatusColors], fontSize: "1rem" }}>
-                ◉ {stateToStatus[bounty.status as keyof typeof stateToStatus]}
+                ◉ {status}
               </Text>
             </Grid>
             <Grid xs={6}>

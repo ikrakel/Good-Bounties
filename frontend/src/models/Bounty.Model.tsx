@@ -3,7 +3,7 @@ export interface Bounty {
   imageUrl: string;
   title: string;
   location: string;
-  status: number;
+  status: string;
   upvotesCount: number;
   totalStaked: number;
   totalStakers: number;
