@@ -8,6 +8,7 @@ import { StatusColors, StatusEnum } from "../models/StatusEnum";
 import { differenceInDays } from "date-fns";
 import { LocationOn } from "@mui/icons-material";
 import { DonateModal } from "../components/DonateModal";
+import { ClaimModal } from "../components/ClaimModal";
 import { Bounty } from "../models/Bounty.Model";
 
 import { execute } from "../.graphclient";
@@ -55,6 +56,7 @@ export const BountyDetailsView = () => {
   const theme = useTheme();
   const [donateModalId, setDonateModalId] = useState<Bounty>();
   const [submitModalId, setSubmitModalId] = useState<Bounty>();
+  const [claimModalId, setClaimModalId] = useState<number>();
   const [tab, setTab] = useState(0);
 
   const { data: bounty, refetch } = useQuery(["getBountyById", params.id], async () => {
@@ -94,6 +96,7 @@ export const BountyDetailsView = () => {
           }}
         />
       )}
+      {claimModalId && <ClaimModal bounty={bounty} close={() => setClaimModalId(undefined)} />}
       <Flex y gap3>
         <Text sx={{ textAlign: "center" }} type="header">
           {bounty.title}
@@ -144,6 +147,7 @@ export const BountyDetailsView = () => {
                 Donate
               </Button>
               <Button onClick={() => setSubmitModalId(bounty)}>Submit</Button>
+              <Button color="success" variant="outlined" onClick={() => setClaimModalId(bounty.tokenId)}>Claim</Button>
             </Grid>
           </Grid>
         </Grid>
