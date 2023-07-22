@@ -4,13 +4,15 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ ethglobal-paris-2023",
-    "create-local": "graph create --node http://localhost:8020/ ethglobal-paris-2023",
-    "remove-local": "graph remove --node http://localhost:8020/ ethglobal-paris-2023",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 ethglobal-paris-2023"
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ ikrakel/ethglobal-paris-2023",
+    "create-local": "graph create --node http://localhost:8020/ ikrakel/ethglobal-paris-2023",
+    "remove-local": "graph remove --node http://localhost:8020/ ikrakel/ethglobal-paris-2023",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 ikrakel/ethglobal-paris-2023",
+    "test": "graph test"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "0.22.0",
-    "@graphprotocol/graph-ts": "0.22.0"
-  }
+    "@graphprotocol/graph-cli": "0.53.0",
+    "@graphprotocol/graph-ts": "0.30.0"
+  },
+  "devDependencies": { "matchstick-as": "0.5.0" }
 }
