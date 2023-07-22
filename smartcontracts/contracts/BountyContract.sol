@@ -18,9 +18,6 @@ contract BountyContract is ERC721URIStorage {
   error VerificationPeriodExpired();
   error OnlyOwnerCanValidateAttestation();
 
-  using Counters for Counters.Counter;
-  Counters.Counter private tokenIds;
-
   struct Bounty {
     uint256 tokenId;
     uint256 submissionDeadline;
@@ -31,6 +28,9 @@ contract BountyContract is ERC721URIStorage {
     string attestationHash;
     PGBountyState state;
   }
+
+  using Counters for Counters.Counter;
+  Counters.Counter private tokenIds;
 
   event BountyCreated(
     uint256 indexed tokenId,
@@ -71,6 +71,23 @@ contract BountyContract is ERC721URIStorage {
     createBounty(newTokenId, submissionDeadline, verificationPeriod);
 
     return newTokenId;
+  }
+
+  function submitProof(
+    uint256 _bountyId,
+    string calldata _attestationHash
+  ) external {
+    Bounty storage bounty = idToBounties[_bountyId];
+    if (bounty.owner == address(0)) revert BountyDoesntExist();
+    if (bounty.state != PGBountyState.OPEN) revert BountyIsNotOpened();
+    if (block.timestamp > bounty.submissionDeadline) revert BountyHasExpired();
+
+    bounty.attestationHash = _attestationHash;
+    bounty.state = PGBountyState.SUBMITTED;
+    bounty.contributor = payable(msg.sender);
+    bounty.submittedTimestamp = block.timestamp;
+
+    emit ProofSubmitted(_bountyId, msg.sender, _attestationHash);
   }
 
   function validateProof(uint256 _bountyId) external {
@@ -136,22 +153,5 @@ contract BountyContract is ERC721URIStorage {
 
   function fetchBounty(uint256 _tokenId) external view returns (Bounty memory) {
     return idToBounties[_tokenId];
-  }
-
-  function submitProof(
-    uint256 _bountyId,
-    string calldata _attestationHash
-  ) external {
-    Bounty storage bounty = idToBounties[_bountyId];
-    if (bounty.owner == address(0)) revert BountyDoesntExist();
-    if (bounty.state != PGBountyState.OPEN) revert BountyIsNotOpened();
-    if (block.timestamp > bounty.submissionDeadline) revert BountyHasExpired();
-
-    bounty.attestationHash = _attestationHash;
-    bounty.state = PGBountyState.SUBMITTED;
-    bounty.contributor = payable(msg.sender);
-    bounty.submittedTimestamp = block.timestamp;
-
-    emit ProofSubmitted(_bountyId, msg.sender, _attestationHash);
   }
 }
