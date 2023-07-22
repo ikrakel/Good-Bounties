@@ -132,7 +132,7 @@ contract BountyContract is ERC721URIStorage {
     );
   }
 
-  function fetchBounties() public view returns (Bounty[] memory) {
+  function fetchBounties() external view returns (Bounty[] memory) {
     uint256 itemCount = tokenIds.current();
     uint256 currentIndex = 0;
 
