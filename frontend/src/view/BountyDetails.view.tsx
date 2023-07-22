@@ -14,6 +14,9 @@ import { execute } from "../.graphclient";
 import { gql } from "@apollo/client";
 import { MATIC_PRICE } from "../data/Constants";
 
+import { useWeb3Auth } from "../contexts/Web3AuthProvider";
+import storeContributorAttestation from "../lib/eas/eas-offchain-attester";
+
 const GET_BOUNTIES = gql`
   query GetBounty($tokenId: Int!) {
     bounty(id: $tokenId) {
@@ -47,9 +50,6 @@ const stateToStatus = {
   2: "Expired",
   3: "Completed",
 };
-import { useWeb3Auth } from "../contexts/Web3AuthProvider";
-import { Provider } from "@ethersproject/abstract-provider";
-import storeContributorAttestation from "../lib/eas/eas-offchain-attester";
 
 export const BountyDetailsView = () => {
   const [bounty, setBounty] = useState<Bounty>();
