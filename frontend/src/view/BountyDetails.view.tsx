@@ -2,7 +2,6 @@ import { useLocation, useParams } from "react-router-dom";
 import { ethers } from "ethers";
 import { Text } from "../components/Text";
 import { useMemo, useState, useEffect } from "react";
-import { MockBounties } from "../data/MockData";
 import { Flex } from "../components/Common/Flex";
 import { Button, Chip, CircularProgress, Divider, Grid, Tab, TabList, TabPanel, Tabs, useTheme } from "@mui/joy";
 import { StatusColors, StatusEnum } from "../models/StatusEnum";
@@ -62,7 +61,7 @@ export const BountyDetailsView = () => {
     if (result.data?.bounty) {
       const b = result.data.bounty;
       setBounty({
-        id: b.tokenId,
+        tokenId: b.tokenId,
         image: b.imageUrl,
         title: b.title,
         location: b.location,
@@ -143,7 +142,7 @@ export const BountyDetailsView = () => {
               </Flex>
             </Grid>
             <Grid xs={12} display="flex" columnGap={2}>
-              <Button variant="soft" color="success" onClick={() => setDonateModalId(bounty.id)}>
+              <Button variant="soft" color="success" onClick={() => setDonateModalId(bounty.tokenId)}>
                 Donate
               </Button>
               <Button onClick={() => submit()}>Submit</Button>

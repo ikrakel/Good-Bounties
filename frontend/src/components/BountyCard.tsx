@@ -23,7 +23,7 @@ interface Props extends Bounty {
 }
 
 export const BountyCard: FC<Props> = ({
-  id,
+  tokenId,
   location,
   prize,
   status,
@@ -40,7 +40,7 @@ export const BountyCard: FC<Props> = ({
 
   return (
     <Card
-      onClick={() => navigate(`/bounty/${id}`)}
+      onClick={() => navigate(`/bounty/${tokenId}`)}
       sx={{
         p: 0,
         "&:hover": { ...Clickable },

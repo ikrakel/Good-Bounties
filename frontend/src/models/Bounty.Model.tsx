@@ -1,7 +1,5 @@
-import { StatusEnum } from "./StatusEnum";
-
 export interface Bounty {
-  id: number;
+  tokenId: number;
   image: string;
   title: string;
   location: string;

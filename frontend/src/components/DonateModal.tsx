@@ -4,11 +4,11 @@ import { FC, useMemo, useState } from "react";
 import { Flex } from "./Common/Flex";
 import { Text } from "./Text";
 import { useWeb3Auth } from "../contexts/Web3AuthProvider";
-import { MockBounties } from "../data/MockData";
 import BountyStakeContract from "./abi/BountyStakeContract.json";
+import { Bounty } from "../models/Bounty.Model";
 
 interface Props {
-  bounty: any;
+  bounty: Bounty;
   close: () => void;
 }
 
@@ -23,15 +23,10 @@ export const DonateModal: FC<Props> = ({ bounty, close }) => {
     if (!signer) return;
     setWaitingForTransaction(true);
 
-    const contract = new ethers.Contract(
-      STAKING_ADDRESS,
-      BountyStakeContract,
-      signer
-    );
+    const contract = new ethers.Contract(STAKING_ADDRESS, BountyStakeContract, signer);
 
     const amount = ethers.utils.parseEther(((Number(rewardAmount) / 100) * Number(walletBalance)).toString());
-
-    const tx = await contract.connect(signer).stake(Number(bounty.id), {value: amount});
+    const tx = await contract.connect(signer).stake(Number(bounty.tokenId), { value: amount });
     await tx.wait();
 
     close();
@@ -66,7 +61,14 @@ export const DonateModal: FC<Props> = ({ bounty, close }) => {
             <Button onClick={() => close()} variant="soft" sx={{ width: "100px" }}>
               Cancel
             </Button>
-            <Button loading={waitingForTransaction} onClick={() => donate()} disabled={!signer} variant="soft" color="success" sx={{ width: "100px" }}>
+            <Button
+              loading={waitingForTransaction}
+              onClick={() => donate()}
+              disabled={!signer}
+              variant="soft"
+              color="success"
+              sx={{ width: "100px" }}
+            >
               Donate
             </Button>
           </Flex>

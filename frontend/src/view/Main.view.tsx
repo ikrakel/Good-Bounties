@@ -11,12 +11,12 @@ import { useMemo, useState, useEffect } from "react";
 import Identicon from "identicon.js";
 import { addDays } from "date-fns";
 import placeholder from "../assets/placeholder.jpg";
-import { MockBounties } from "../data/MockData";
 import { DonateModal } from "../components/DonateModal";
 
 import { execute } from "../.graphclient";
 import { gql } from "@apollo/client";
 import { ethers } from "ethers";
+import { Bounty } from "../models/Bounty.Model";
 
 const GET_BOUNTIES = gql`
   query GetBounties {
@@ -42,7 +42,7 @@ export const MainView = () => {
   const [allBounties, setAllBounties] = useState([]);
 
   //Bounty ID. Set to undefined to close the modal, or to a Bounty ID to open it
-  const [donateModalBounty, setDonateModalBounty] = useState<number>();
+  const [donateModalBounty, setDonateModalBounty] = useState<Bounty>();
 
   const getAllBounties = async () => {
     const result = await execute(GET_BOUNTIES, {});
@@ -101,7 +101,7 @@ export const MainView = () => {
       >
         {allBounties.map((bounty: any, i) => (
           <BountyCard
-            id={bounty.tokenId}
+            tokenId={bounty.tokenId}
             image={bounty.imageUrl || placeholder}
             key={bounty.tokenId}
             deadline={getDate(bounty)}
