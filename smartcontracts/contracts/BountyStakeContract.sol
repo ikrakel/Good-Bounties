@@ -2,8 +2,8 @@
 
 pragma solidity ^0.8.19;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import {PGBountyState, BountyContract} from "./BountyContract.sol";
+import { PGBountiesManager } from "./PGBountiesManager.sol";
+import { PGBountyState, Bounty } from "./interfaces/IPGBountiesHandler.sol";
 
 /*
  * The BountyStakeContract is designed to facilitate staking on NFT Bounties. Each NFT
@@ -33,7 +33,7 @@ interface IBountyStakeContract {
 }
 
 contract BountyStakeContract is IBountyStakeContract {
-    address public bountyNFT;
+    address public bountyContractAddress;
 
     // Event declarations
     event StakeMade(
@@ -52,7 +52,7 @@ contract BountyStakeContract is IBountyStakeContract {
     mapping(uint256 => uint256) public totalStakesPerTokenId;
 
     constructor(address _bountyNFT) {
-        bountyNFT = _bountyNFT;
+        bountyContractAddress = _bountyNFT;
     }
 
     function getStake(
@@ -65,7 +65,7 @@ contract BountyStakeContract is IBountyStakeContract {
     function stake(
         uint256 _tokenId
     ) external payable override(IBountyStakeContract) {
-        require(BountyContract(bountyNFT).ownerOf(_tokenId) != address(0), "Bounty does not exist");
+        require(PGBountiesManager(bountyContractAddress).ownerOf(_tokenId) != address(0), "Bounty does not exist");
         require(msg.value > 0, "Stake must be greater than 0");
 
         // Add the new stake to the mapping
@@ -78,8 +78,8 @@ contract BountyStakeContract is IBountyStakeContract {
     function withdraw(
         uint256 _tokenId
     ) external override(IBountyStakeContract) {
-        require(BountyContract(bountyNFT).ownerOf(_tokenId) != address(0), "Bounty does not exist");
-        BountyContract.Bounty memory bounty = BountyContract(bountyNFT).fetchBounty(_tokenId);
+        require(PGBountiesManager(bountyContractAddress).ownerOf(_tokenId) != address(0), "Bounty does not exist");
+        Bounty memory bounty = PGBountiesManager(bountyContractAddress).fetchBounty(_tokenId);
 
         require(bounty.state == PGBountyState.VALIDATED || bounty.state == PGBountyState.EXPIRED, "Bounty's state does not allow withdrawls");
 
@@ -95,7 +95,7 @@ contract BountyStakeContract is IBountyStakeContract {
     function _withdrawForContributors(
         uint256 _tokenId,
         address _claimer,
-        BountyContract.Bounty memory bounty
+        Bounty memory bounty
     ) internal {
         require(bounty.contributor == _claimer, "Only the contributor can withdraw");
         require(totalStakesPerTokenId[_tokenId] > 0, "No funds to withdraw");
@@ -103,7 +103,7 @@ contract BountyStakeContract is IBountyStakeContract {
         uint256 availableForBounty = totalStakesPerTokenId[_tokenId];
         totalStakesPerTokenId[_tokenId] = 0;
 
-        BountyContract(bountyNFT).claimBounty(_tokenId);
+        PGBountiesManager(bountyContractAddress).claimBounty(_tokenId);
         payable(_claimer).transfer(availableForBounty);
     }
 

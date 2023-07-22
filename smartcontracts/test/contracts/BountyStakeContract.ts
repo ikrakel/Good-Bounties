@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 
 import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
-import type { BountyStakeContract, BountyContract } from "../../typechain-types";
+import type { BountyStakeContract, PGBountiesManager } from "../../typechain-types";
 import { Artifacts } from "../shared";
 import { findEvent, ensureTimestamp } from "../shared/utils";
 
@@ -21,7 +21,7 @@ describe("BountyStakeContract", () => {
   let addr1: SignerWithAddress;
   let addr2: SignerWithAddress;
 
-  let bountyContract: BountyContract;
+  let pgBountiesManager: PGBountiesManager;
   let openBountyEvent: any;
   let bountyStakeContract: BountyStakeContract;
 
@@ -41,9 +41,9 @@ describe("BountyStakeContract", () => {
   });
 
   const builder = async () => {
-    bountyContract = await deployContract(creator, Artifacts.BountyContract, []) as BountyContract;
+    pgBountiesManager = await deployContract(creator, Artifacts.PGBountiesManager, []) as PGBountiesManager;
     return deployContract(creator, Artifacts.BountyStakeContract, [
-      bountyContract.address
+      pgBountiesManager.address
     ]) as Promise<BountyStakeContract>;
   };
 
@@ -54,7 +54,7 @@ describe("BountyStakeContract", () => {
   describe("functions", () => {
     beforeEach(async () => {
       bountyStakeContract = await builder();
-      const tx = await bountyContract.connect(addr1).openBounty(deadline, period, "uri");
+      const tx = await pgBountiesManager.connect(addr1).openBounty(deadline, period, "uri");
       openBountyEvent = await findEvent(tx, "Transfer");
     });
 
@@ -79,7 +79,7 @@ describe("BountyStakeContract", () => {
 
       // expireBounty
       await ensureTimestamp(dayjs().add(5, "day").unix());
-      await bountyContract.expireBounty(tokenID);
+      await pgBountiesManager.expireBounty(tokenID);
 
       await bountyStakeContract.connect(addr1).stake(tokenID, { value: parseUnits("1") });
       expect(await getBalanceOfStake(tokenID, addr1.address)).to.eq(parseUnits("1"));
@@ -93,7 +93,7 @@ describe("BountyStakeContract", () => {
 
       // expireBounty
       await ensureTimestamp(dayjs().add(5, "day").unix());
-      await bountyContract.expireBounty(tokenID);
+      await pgBountiesManager.expireBounty(tokenID);
 
       await bountyStakeContract.connect(addr1).stake(tokenID, { value: parseUnits("1") });
       expect(await getBalanceOfStake(tokenID, addr1.address)).to.eq(parseUnits("1"));

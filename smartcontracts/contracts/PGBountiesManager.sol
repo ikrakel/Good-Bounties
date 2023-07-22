@@ -215,7 +215,7 @@ contract PGBountiesManager is ERC721URIStorage, IPGBountiesHandler {
         Bounty storage bounty = idToBounties[_bountyId];
 
         if (bounty.owner == address(0)) revert BountyDoesntExist();
-        if (block.timestamp > bounty.submissionDeadline)
+        if (block.timestamp <= bounty.submissionDeadline)
             revert BountyHasntExpiredYet();
 
         bounty.state == PGBountyState.EXPIRED;
