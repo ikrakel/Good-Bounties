@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.19;
 
 import '@openzeppelin/contracts/utils/Counters.sol';
 import '@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol';
@@ -40,15 +40,18 @@ contract BountyContract is ERC721URIStorage {
     PGBountyState state
   );
 
-  event ProofSubmitted(
-    uint256 indexed tokenId,
-    address indexed contributor,
-    string attestationHash
-  );
+    event ProofSubmitted(
+        uint256 indexed tokenId,
+        address indexed contributor,
+        string attestationHash
+    );
 
-  address payable owner;
+    using Counters for Counters.Counter;
+    Counters.Counter private tokenIds;
 
-  mapping(uint256 => Bounty) private idToBounties;
+    address payable owner;
+
+    mapping(uint256 => Bounty) private idToBounties;
 
   constructor() ERC721('Token', 'NFT') {
     owner = payable(msg.sender);
@@ -90,22 +93,24 @@ contract BountyContract is ERC721URIStorage {
     emit ProofSubmitted(_bountyId, msg.sender, _attestationHash);
   }
 
-  function validateProof(uint256 _bountyId) external {
-    _checksBeforeValidation(_bountyId);
-  }
+    function validateProof(uint256 _bountyId, DelegatedAttestationRequest memory request) external {
+      _checksBeforeValidation(_bountyId)
+    }
 
-  function denyProof(uint256 _bountyId) external {
-    _checksBeforeValidation(_bountyId);
-  }
+    function denyProof(uint256 _bountyId) external {
+      _checksBeforeValidation(_bountyId)
+    }
 
-  function _checksBeforeValidation(uint256 _bountyId) internal {
-    Bounty storage bounty = idToBounties[_bountyId];
-    if (bounty.owner == address(0)) revert BountyDoesntExist();
-    if (bounty.owner != msg.sender) revert OnlyOwnerCanValidateAttestation();
-    if (bounty.state != PGBountyState.SUBMITTED) revert BountyIsNotSubmitted();
-    if (block.timestamp > bounty.submittedTimestamp + bounty.verificationPeriod)
-      revert VerificationPeriodExpired();
-  }
+    function _checksBeforeValidation(uint256 _bountyId) internal {
+        Bounty storage bounty = idToBounties[bountyId];
+        if (bounty.owner == address(0)) revert BountyDoesntExist();
+        if (bounty.owner != msg.msg.sender)
+            revert OnlyOwnerCanValidateAttestation();
+        if (bounty.state != PGBountyState.SUBMITTED)
+            revert BountyIsNotSubmitted();
+        if (block.timestamp > bounty.submittedTime + bounty.verificationPeriod)
+            revert VerificationPeriodExpired();
+    }
 
   function createBounty(
     uint256 tokenId,
