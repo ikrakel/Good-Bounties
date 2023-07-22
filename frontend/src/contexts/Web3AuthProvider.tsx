@@ -41,17 +41,17 @@ const modalConfig = {
 };
 
 // https://web3auth.io/docs/sdk/pnp/web/modal/whitelabel#whitelabeling-while-modal-initialization
-const openloginAdapter = new OpenloginAdapter({
-  loginSettings: {
-    mfaLevel: "mandatory",
-  },
-  adapterSettings: {
-    uxMode: "popup",
-    whiteLabel: {
-      name: "Safe",
-    },
-  },
-});
+// const openloginAdapter = new OpenloginAdapter({
+//   loginSettings: {
+//     mfaLevel: "mandatory",
+//   },
+//   adapterSettings: {
+//     uxMode: "popup",
+//     whiteLabel: {
+//       name: "Safe",
+//     },
+//   },
+// });
 
 const web3AuthConfig: Web3AuthConfig = {
   txServiceUrl: "https://safe-transaction-polygon.safe.global",
@@ -88,8 +88,7 @@ export const Web3AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const web3AuthModalPack = new Web3AuthModalPack(web3AuthConfig);
     await web3AuthModalPack.init({
       options,
-      //@ts-ignore
-      adapters: [openloginAdapter],
+      adapters: [],
       modalConfig,
     });
 

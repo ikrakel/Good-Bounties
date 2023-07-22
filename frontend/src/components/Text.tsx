@@ -4,7 +4,7 @@ import { FC } from "react";
 
 interface Props extends TypographyProps {
   children: React.ReactNode;
-  type?: "header" | "header2" | "body" | "caption";
+  type?: "header" | "header2" | "body" | "caption" | "light";
   mb?: number;
 }
 
@@ -40,11 +40,18 @@ const CaptionSx = {
   fontSize: "xs",
 };
 
+const LightSx = {
+  fontSize: "0.75rem",
+  fontWeight: "normal",
+  color: "grey",
+};
+
 const sxMap = {
   header: HeaderSx,
   header2: Header2Sx,
   body: BodySx,
   caption: CaptionSx,
+  light: LightSx,
 };
 
 export const Text: FC<Props> = ({ children, type = "body", mb, ...rest }) => {
@@ -54,10 +61,7 @@ export const Text: FC<Props> = ({ children, type = "body", mb, ...rest }) => {
 
   return (
     <>
-      <Typography
-        sx={{ ...sx, mb: type !== "header" ? mb : undefined }}
-        {...props}
-      >
+      <Typography sx={{ ...sx, mb: type !== "header" ? mb : undefined }} {...props}>
         {children}
       </Typography>
     </>

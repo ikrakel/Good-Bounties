@@ -11,6 +11,7 @@ import { useMemo } from "react";
 import Identicon from "identicon.js";
 import { addDays } from "date-fns";
 import placeholder from "../assets/placeholder.jpg";
+import { MockBounties } from "../data/MockData";
 
 export const MainView = () => {
   const theme = useTheme();
@@ -58,18 +59,19 @@ export const MainView = () => {
           gap: 2,
         }}
       >
-        {new Array(10).fill("").map((x, i) => (
+        {MockBounties.map((bounty, i) => (
           <BountyCard
-            image={placeholder}
-            key={i}
+            id={bounty.id}
+            image={bounty.image || placeholder}
+            key={bounty.title}
             deadline={addDays(new Date(), 30)}
-            title="Plant 1000 trees in France"
-            location="France"
-            prize={10000}
-            status={StatusEnum.Open}
-            upvotesCount={120}
-            submitterName={`${signer?.address.slice(0, 6)}...${signer?.address.slice(-4)}` || ""}
-            submitterAvatar={avatar}
+            title={bounty.title}
+            location={bounty.location}
+            prize={bounty.prize}
+            status={bounty.status}
+            upvotesCount={bounty.upvotesCount}
+            submitterName={bounty.submitterName}
+            submitterAvatar={"https://i.pravatar.cc/50?u=" + bounty.submitterName}
           />
         ))}
       </Box>

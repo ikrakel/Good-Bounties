@@ -1,6 +1,19 @@
-import { Autocomplete, Box, Button, Divider, IconButton, Input, Modal, ModalDialog, Slider, Textarea } from "@mui/joy";
+import {
+  Autocomplete,
+  Box,
+  Button,
+  Card,
+  Divider,
+  IconButton,
+  Input,
+  Modal,
+  ModalDialog,
+  Slider,
+  Textarea,
+  useTheme,
+} from "@mui/joy";
 import { AModal } from "./Common/AModal";
-import { Dispatch, FC, SetStateAction, useEffect, useMemo, useState } from "react";
+import { Dispatch, FC, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 import { Countries } from "../data/Countries";
 import { Flex } from "./Common/Flex";
 import { Text } from "./Text";
@@ -10,6 +23,8 @@ import { Add, Delete, Remove } from "@mui/icons-material";
 import { useWeb3Auth } from "../contexts/Web3AuthProvider";
 import { useQuery } from "@tanstack/react-query";
 import { ethers } from "ethers";
+import { useDropzone } from "react-dropzone";
+import { Clickable } from "./css/Button";
 
 interface Props {
   createModalOpen: boolean;
@@ -18,6 +33,7 @@ interface Props {
 
 export const CreateBountyModal: FC<Props> = ({ createModalOpen, setCreateModalOpen }) => {
   const { signer, provider, walletBalance } = useWeb3Auth();
+  const theme = useTheme();
 
   const [currentStep, setCurrentStep] = useState(0);
   const [title, setTitle] = useState("");
@@ -26,6 +42,16 @@ export const CreateBountyModal: FC<Props> = ({ createModalOpen, setCreateModalOp
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState<Date | undefined>(addDays(new Date(), 7));
   const [criterias, setCriterias] = useState([""]);
+  const [image, setImage] = useState<File>();
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    setImage(acceptedFiles[0]);
+  }, []);
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
+  const imageUri = useMemo(() => {
+    if (image) return URL.createObjectURL(image);
+  }, [image]);
 
   const step1 = () => {
     return (
@@ -51,6 +77,35 @@ export const CreateBountyModal: FC<Props> = ({ createModalOpen, setCreateModalOp
           variant="soft"
           placeholder="Bounty description"
         />
+
+        {image ? (
+          <Flex
+            onClick={() => setImage(undefined)}
+            sx={{
+              // ...Clickable,
+              backgroundPosition: "center",
+              backgroundSize: "cover",
+              backgroundImage: `url(${imageUri})`,
+              height: "250px",
+            }}
+          ></Flex>
+        ) : (
+          <Flex
+            component={Card}
+            x
+            yc
+            xc
+            {...getRootProps()}
+            sx={{ ...Clickable, backgroundColor: theme.palette.primary.softBg, height: "100px" }}
+          >
+            <input {...getInputProps()} />
+            {isDragActive ? (
+              <p>Drop the files here ...</p>
+            ) : (
+              <p>Drag 'n' drop some files here, or click to select files</p>
+            )}
+          </Flex>
+        )}
       </Flex>
     );
   };
@@ -63,7 +118,10 @@ export const CreateBountyModal: FC<Props> = ({ createModalOpen, setCreateModalOp
             sx={{ width: "50%" }}
             variant="soft"
             placeholder="Location"
+            value={location}
+            onChange={(e, val) => val && setLocation(val)}
             options={Countries.map((country) => country.name)}
+            disableClearable
           />
           <DatePicker
             sx={{ width: "50%" }}
@@ -139,6 +197,12 @@ export const CreateBountyModal: FC<Props> = ({ createModalOpen, setCreateModalOp
       </Flex>
     );
   };
+  const steps = [() => step1(), () => step2(), () => step3()];
+
+  const submit = () => {
+    //TODO SUBMIT
+    console.log("submit");
+  };
 
   const back = () => {
     if (currentStep === 0) setCreateModalOpen(false);
@@ -146,10 +210,10 @@ export const CreateBountyModal: FC<Props> = ({ createModalOpen, setCreateModalOp
   };
 
   const next = () => {
-    setCurrentStep(currentStep + 1);
+    if (currentStep >= steps.length - 1) {
+      submit();
+    } else setCurrentStep(currentStep + 1);
   };
-
-  const steps = [() => step1(), () => step2(), () => step3()];
 
   return (
     <Modal open={createModalOpen} onClose={() => setCreateModalOpen(false)}>

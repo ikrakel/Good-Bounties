@@ -15,7 +15,7 @@ export const AppRouter = () => {
       element: <MainLayout />,
       children: [
         { path: "main", element: <MainView /> },
-        { path: "details/:id", element: <BountyDetailsView /> },
+        { path: "bounty/:id", element: <BountyDetailsView /> },
       ],
     },
   ]);

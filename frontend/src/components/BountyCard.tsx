@@ -7,20 +7,10 @@ import { Favorite, LocationOn, ThumbUp, ThumbUpAlt } from "@mui/icons-material";
 import { differenceInDays, format } from "date-fns";
 import { Clickable } from "./css/Button";
 import { useNavigate } from "react-router-dom";
+import { Bounty } from "../models/Bounty.Model";
 
-interface Props {
-  image: string;
-  title: string;
-  location: string;
-  status: StatusEnum;
-  upvotesCount: number;
-  prize: number;
-  submitterName: string;
-  submitterAvatar: string;
-  deadline: Date;
-}
-
-export const BountyCard: FC<Props> = ({
+export const BountyCard: FC<Bounty> = ({
+  id,
   location,
   prize,
   status,
@@ -35,7 +25,7 @@ export const BountyCard: FC<Props> = ({
   const navigate = useNavigate();
   return (
     <Card
-      onClick={() => navigate("/bounty/1")}
+      onClick={() => navigate(`/bounty/${id}`)}
       sx={{
         p: 0,
         "&:hover": { ...Clickable },
@@ -76,28 +66,38 @@ export const BountyCard: FC<Props> = ({
           <Text sx={{ color: theme.palette.neutral[600], fontSize: "0.8rem" }}>{upvotesCount}</Text>
         </Flex>
       </Flex>
-      <Flex y gap1 p={2} pt={0}>
+      <Flex y ysb gap1 p={2} pt={0} sx={{ flexGrow: 1 }}>
         <Text sx={{ fontWeight: "bold" }}>{title}</Text>
 
         <Flex x yc gap1>
-          <img width="20px" src={submitterAvatar} />
+          <Flex
+            sx={{
+              backgroundSize: "contain",
+              borderRadius: "100px",
+              width: "30px",
+              height: "30px",
+              backgroundImage: `url(${submitterAvatar})`,
+            }}
+          ></Flex>
           <Text sx={{ fontSize: "0.8rem" }}>{submitterName}</Text>
         </Flex>
 
-        <Text sx={{ mt: 3, fontWeight: "bold", fontSize: "0.8rem" }}>Reward: {prize.toLocaleString()}$</Text>
+        <Flex y sx={{ justifySelf: "flex-end" }}>
+          <Text sx={{ mt: 3, fontWeight: "bold", fontSize: "0.8rem" }}>Reward: {prize.toLocaleString()}$</Text>
 
-        <Flex x xsb yc>
-          <Text
-            sx={{
-              color: theme.palette.neutral[600],
-              fontSize: "0.8rem",
-            }}
-          >
-            Expires in {differenceInDays(deadline, new Date())} days
-          </Text>
-          <Flex x yc gap1 sx={{ color: theme.palette.neutral[600] }}>
-            <LocationOn fontSize="small" />{" "}
-            <Text sx={{ color: theme.palette.neutral[600], fontSize: "0.8rem" }}>{location}</Text>
+          <Flex x xsb yc>
+            <Text
+              sx={{
+                color: theme.palette.neutral[600],
+                fontSize: "0.8rem",
+              }}
+            >
+              Expires in {differenceInDays(deadline, new Date())} days
+            </Text>
+            <Flex x yc gap1 sx={{ color: theme.palette.neutral[600] }}>
+              <LocationOn fontSize="small" />{" "}
+              <Text sx={{ color: theme.palette.neutral[600], fontSize: "0.8rem" }}>{location}</Text>
+            </Flex>
           </Flex>
         </Flex>
       </Flex>
