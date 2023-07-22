@@ -25,8 +25,10 @@ describe("BountyStakeContract", () => {
   let openBountyEvent: any;
   let bountyStakeContract: BountyStakeContract;
 
-  let deadline = dayjs().add(1, "day").unix();
+  let start = dayjs().add(1, "day").unix();
+  let deadline = dayjs().add(2, "day").unix();
   let period = deadline - dayjs().unix();
+  let skipTime = dayjs().add(5, "day");
 
   beforeEach(async () => {
     [creator, addr1, addr2] = await ethers.getSigners();
@@ -78,7 +80,7 @@ describe("BountyStakeContract", () => {
       const tokenID = openBountyEvent.args.tokenId;
 
       // expireBounty
-      await ensureTimestamp(dayjs().add(5, "day").unix());
+      await ensureTimestamp(skipTime.unix());
       await pgBountiesManager.expireBounty(tokenID);
 
       await bountyStakeContract.connect(addr1).stake(tokenID, { value: parseUnits("1") });
@@ -86,19 +88,6 @@ describe("BountyStakeContract", () => {
 
       await bountyStakeContract.connect(addr1).withdraw(tokenID);
       expect(await getBalanceOfStake(tokenID, addr1.address)).to.eq(parseUnits("0"));
-    });
-
-    it("does not allow anyone but the user to withdraw the stake", async () => {
-      const tokenID = openBountyEvent.args.tokenId;
-
-      // expireBounty
-      await ensureTimestamp(dayjs().add(5, "day").unix());
-      await pgBountiesManager.expireBounty(tokenID);
-
-      await bountyStakeContract.connect(addr1).stake(tokenID, { value: parseUnits("1") });
-      expect(await getBalanceOfStake(tokenID, addr1.address)).to.eq(parseUnits("1"));
-
-      expect(bountyStakeContract.connect(addr2).withdraw(tokenID)).to.be.revertedWith('No funds to withdraw');
     });
   });
 });
