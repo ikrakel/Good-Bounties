@@ -18,7 +18,7 @@ import { Countries } from "../data/Countries";
 import { Flex } from "./Common/Flex";
 import { Text } from "./Text";
 import { DatePicker } from "@mui/x-date-pickers";
-import { addDays } from "date-fns";
+import { addDays, format } from "date-fns";
 import { Add, Delete, Remove } from "@mui/icons-material";
 import { useWeb3Auth } from "../contexts/Web3AuthProvider";
 import { useQuery } from "@tanstack/react-query";
@@ -200,8 +200,13 @@ export const CreateBountyModal: FC<Props> = ({ createModalOpen, setCreateModalOp
   const steps = [() => step1(), () => step2(), () => step3()];
 
   const submit = () => {
-    //TODO SUBMIT
-    console.log("submit");
+    // UploadMetadata(image!, {
+    //   title,
+    //   description,
+    //   location,
+    //   deadline: format(deadline!, "yyyy-MM-dd"),
+    //   criteria: criterias.join("\n"),
+    // });
   };
 
   const back = () => {

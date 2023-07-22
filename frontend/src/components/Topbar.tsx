@@ -22,7 +22,7 @@ export const Topbar = () => {
       path: "main",
     },
     {
-      name: "Start a project",
+      name: "Create Bounty",
       onClick: () => setCreateModalOpen(true),
     },
   ];
@@ -62,8 +62,8 @@ export const Topbar = () => {
         })}
       </Flex>
 
-      <Text type="header" sx={{ textAlign: "center" }}>
-        Public bounties
+      <Text color="success" type="header" sx={{ textAlign: "center", textTransform: "none", fontSize: "1.8rem" }}>
+        GoodBounties
       </Text>
 
       {web3AuthModalPack?.web3Auth?.status === ADAPTER_STATUS.CONNECTED ? (
@@ -76,7 +76,7 @@ export const Topbar = () => {
             p: 0.2,
             px: 2,
             border: "1px solid " + theme.palette.divider,
-            backgroundColor: theme.palette.neutral.solidBg,
+            backgroundColor: theme.palette.primary.solidBg,
             borderRadius: "sm",
             cursor: "pointer",
             "&:hover": {

@@ -2,7 +2,7 @@ import { FC } from "react";
 import { Flex } from "./Common/Flex";
 import { StatusColors, StatusEnum } from "../models/StatusEnum";
 import { Text } from "./Text";
-import { Card, Divider, useTheme } from "@mui/joy";
+import { Button, Card, Divider, useTheme } from "@mui/joy";
 import { Favorite, LocationOn, ThumbUp, ThumbUpAlt } from "@mui/icons-material";
 import { differenceInDays, format } from "date-fns";
 import { Clickable } from "./css/Button";
@@ -69,36 +69,51 @@ export const BountyCard: FC<Bounty> = ({
       <Flex y ysb gap1 p={2} pt={0} sx={{ flexGrow: 1 }}>
         <Text sx={{ fontWeight: "bold" }}>{title}</Text>
 
-        <Flex x yc gap1>
-          <Flex
-            sx={{
-              backgroundSize: "contain",
-              borderRadius: "100px",
-              width: "30px",
-              height: "30px",
-              backgroundImage: `url(${submitterAvatar})`,
-            }}
-          ></Flex>
-          <Text sx={{ fontSize: "0.8rem" }}>{submitterName}</Text>
-        </Flex>
-
-        <Flex y sx={{ justifySelf: "flex-end" }}>
-          <Text sx={{ mt: 3, fontWeight: "bold", fontSize: "0.8rem" }}>Reward: {prize.toLocaleString()}$</Text>
-
-          <Flex x xsb yc>
-            <Text
+        <Flex x xsb>
+          <Flex x yc gap1>
+            <Flex
               sx={{
-                color: theme.palette.neutral[600],
-                fontSize: "0.8rem",
+                backgroundSize: "contain",
+                borderRadius: "100px",
+                width: "30px",
+                height: "30px",
+                backgroundImage: `url(${submitterAvatar})`,
               }}
-            >
-              Expires in {differenceInDays(deadline, new Date())} days
-            </Text>
-            <Flex x yc gap1 sx={{ color: theme.palette.neutral[600] }}>
-              <LocationOn fontSize="small" />{" "}
-              <Text sx={{ color: theme.palette.neutral[600], fontSize: "0.8rem" }}>{location}</Text>
+            ></Flex>
+            <Text sx={{ fontSize: "0.8rem" }}>{submitterName}</Text>
+          </Flex>
+
+          <Flex x yc gap1 sx={{ color: theme.palette.neutral[600] }}>
+            <LocationOn fontSize="small" />{" "}
+            <Text sx={{ color: theme.palette.neutral[600], fontSize: "0.8rem" }}>{location}</Text>
+          </Flex>
+        </Flex>
+        <Flex x xsb ye>
+          <Flex y sx={{ justifySelf: "flex-end" }}>
+            <Text sx={{ mt: 3, fontWeight: "bold", fontSize: "0.8rem" }}>${prize.toLocaleString()} donated</Text>
+
+            <Flex x xsb yc>
+              <Text
+                sx={{
+                  color: theme.palette.neutral[600],
+                  fontSize: "0.8rem",
+                }}
+              >
+                Expires in {differenceInDays(deadline, new Date())} days
+              </Text>
             </Flex>
           </Flex>
+          <Button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log("open donation modal");
+            }}
+            variant="soft"
+            color="success"
+          >
+            Donate
+          </Button>
         </Flex>
       </Flex>
     </Card>
