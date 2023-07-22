@@ -80,8 +80,8 @@ interface IPGBountiesHandler {
 
     /// @dev callable by bounty owner
     function validateProof(
-        uint256 _bountyId,
-        DelegatedAttestationRequest calldata _request
+        uint256 _bountyId
+        // DelegatedAttestationRequest calldata _request
     ) external;
 
     /// @dev callable by bounty owner

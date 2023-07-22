@@ -6,6 +6,8 @@
     "@apollo/client": "^3.7.17",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@ethereum-attestation-service/eas-sdk": "^0.29.1",
+    "@ethersproject/wallet": "^5.7.0",
     "@fontsource/roboto": "^5.0.5",
     "@gelatonetwork/relay-sdk": "^4.0.0",
     "@mui/icons-material": "^5.14.1",
