@@ -26,7 +26,7 @@ interface Props {
   close: () => void;
 }
 
-const PG_BOUNTIES_ADDRESS = "0x87aD9FbE6c054fe330c996d101716De439eaaB9c";
+const PG_BOUNTIES_ADDRESS = "0x297CDC6d71a2e2321F76dadCDa939A1ffB22c2EC";
 
 export const SubmitModal: FC<Props> = ({ bounty, close }) => {
   const { walletBalance, signer } = useWeb3Auth();

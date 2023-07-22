@@ -3,52 +3,52 @@ import dayjs from "dayjs";
 import * as BountyContract from "../artifacts/contracts/PGBountiesManager.sol/PGBountiesManager.json";
 
 const ALL_BOUNTIES = [
-  {
+  { // 0
     submissionDeadline: "2023-12-05",
     verificationPeriod: "24",
     uri: "ipfs://bafyreib23qbj4qde3a5cy6uo5lxufhmvd67g2cijnlerjm3qknm62v74om/metadata.json"
   },
-  {
+  { // 1
     submissionDeadline: "2023-08-05",
     verificationPeriod: "24",
     uri: "ipfs://bafyreifoaxtfn7uj5v52ex5g55gvgzgpvnll3y5mwmurjd23j2ewk3yywu/metadata.json"
   },
-  {
+  { // 2
     submissionDeadline: "2023-09-20",
     verificationPeriod: "24",
     uri: "ipfs://bafyreia4rdcomn35emo6u5wdq4ht5yaoh6x5ot5sao4i7jhmkzenqjfw7u/metadata.json"
   },
-  {
+  { // 3
     submissionDeadline: "2023-11-30",
     verificationPeriod: "24",
     uri: "ipfs://bafyreignmnoewbfifx7f3fl54lssq3zgaot7yvvcwoicq4d2upxrhnbjr4/metadata.json"
   },
-  {
+  { // 4
     submissionDeadline: "2023-08-30",
     verificationPeriod: "24",
     uri: "ipfs://bafyreibcrm6gmilidhucb53b7avr5eufycyzinscoata22beiu5lmyalwa/metadata.json"
   },
-  {
+  { // 5
     submissionDeadline: "2023-07-20",
     verificationPeriod: "24",
     uri: "ipfs://bafyreia33fx53vrvh4sa7gotg2kuoqlozrqtb5a7u3czpoxojp3t5cvc6a/metadata.json"
   },
-  {
+  { // 6
     submissionDeadline: "2023-11-15",
     verificationPeriod: "24",
     uri: "ipfs://bafyreiffaoi4peh3lhtk6kawfi3z2ox3laog5fopnxmi4sbwelt7gdxf5m/metadata.json"
   },
-  {
+  { // 7
     submissionDeadline: "2023-08-31",
     verificationPeriod: "24",
     uri: "ipfs://bafyreieljs6vifumbrpgrtclxwtxicp62yx5vulm6b6zgo7ugrp6qnl5ly/metadata.json"
   },
-  {
+  { // 8
     submissionDeadline: "2023-08-15",
     verificationPeriod: "24",
     uri: "ipfs://bafyreifiitlsi5c2v43qdky4ghqiou4yj6v223fjq63diogqlvsjy266xi/metadata.json"
   },
-  {
+  { // 9
     submissionDeadline: "2023-10-10",
     verificationPeriod: "24",
     uri: "ipfs://bafyreicfkjdksonuoycwqyls4corjpuudkmnewvv3r7uf45mml7n33vgma/metadata.json"
@@ -64,7 +64,7 @@ async function main() {
   console.log(`Creator is ${creator.address}`);
 
   const pgBountiesManager = new ethers.Contract(
-    "0x87aD9FbE6c054fe330c996d101716De439eaaB9c",
+    "0x297CDC6d71a2e2321F76dadCDa939A1ffB22c2EC",
     BountyContract.abi,
     provider
   );

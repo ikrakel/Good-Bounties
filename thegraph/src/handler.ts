@@ -5,7 +5,12 @@ import {
 } from "../generated/BountyStakeContract/BountyStakeContract"
 import {
   PGBountiesManager,
-  BountyCreated
+  BountyCreated,
+  ProofSubmitted,
+  ProofValidated,
+  ProofDenied,
+  BountyClaimed,
+  BountyExpired
 } from "../generated/PGBountiesManager/PGBountiesManager"
 import { Bounty, BountyStaker, Staker } from "../generated/schema"
 
@@ -118,7 +123,59 @@ export function handleBountyCreated(event: BountyCreated): void {
   bounty.save();
 }
 
-export function handleStateUpdate(event: any): void {
+export function handleProofSubmitted(event: ProofSubmitted): void {
+  if (!event) {
+    return;
+  }
+
+  let bounty = Bounty.load(event.params.tokenId.toString());
+  if (bounty) {
+    bounty.status = event.params.state.toString();
+    bounty.save();
+  }
+}
+
+export function handleProofValidated(event: ProofValidated): void {
+  if (!event) {
+    return;
+  }
+
+  let bounty = Bounty.load(event.params.tokenId.toString());
+  if (bounty) {
+    bounty.status = event.params.state.toString();
+    bounty.save();
+  }
+}
+
+export function handleProofDenied(event: ProofDenied): void {
+  if (!event) {
+    return;
+  }
+
+  let bounty = Bounty.load(event.params.tokenId.toString());
+  if (bounty) {
+    bounty.status = event.params.state.toString();
+    bounty.save();
+  }
+}
+
+export function handleBountyClaimed(event: BountyClaimed): void {
+  if (!event) {
+    return;
+  }
+
+  let bounty = Bounty.load(event.params.tokenId.toString());
+  if (bounty) {
+    bounty.status = event.params.state.toString();
+    bounty.save();
+  }
+}
+
+export function handleBountyExpired(event: BountyExpired): void {
+  if (!event) {
+    return;
+  }
+
   let bounty = Bounty.load(event.params.tokenId.toString());
   if (bounty) {
     bounty.status = event.params.state.toString();
