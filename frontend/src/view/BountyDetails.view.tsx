@@ -16,6 +16,8 @@ import { MATIC_PRICE } from "../data/Constants";
 
 import { useWeb3Auth } from "../contexts/Web3AuthProvider";
 import storeContributorAttestation from "../lib/eas/eas-offchain-attester";
+import { ValidateModal } from "../components/ValidateModal";
+import { SubmitModal } from "../components/SubmitModal";
 
 const GET_BOUNTIES = gql`
   query GetBounty($tokenId: Int!) {
@@ -58,6 +60,8 @@ export const BountyDetailsView = () => {
   const { signer, provider } = useWeb3Auth();
 
   const [donateModalId, setDonateModalId] = useState<number>();
+  const [submitModalId, setSubmitModalId] = useState<number>();
+  const [validateModalId, setValidateModalId] = useState<number>();
   const [tab, setTab] = useState(0);
 
   const loadBounty = async () => {
@@ -111,6 +115,8 @@ export const BountyDetailsView = () => {
   return (
     <>
       {donateModalId && <DonateModal bounty={bounty} close={() => setDonateModalId(undefined)} />}
+      {submitModalId && <SubmitModal bounty={bounty} close={() => setSubmitModalId(undefined)} />}
+      {validateModalId && <ValidateModal bounty={bounty} close={() => setValidateModalId(undefined)} />}
       <Flex y gap3>
         <Text sx={{ textAlign: "center" }} type="header">
           {bounty.title}
@@ -162,7 +168,9 @@ export const BountyDetailsView = () => {
               <Button variant="soft" color="success" onClick={() => setDonateModalId(bounty.tokenId)}>
                 Donate
               </Button>
-              <Button onClick={() => submit()}>Submit</Button>
+              <Button onClick={() => setSubmitModalId(bounty.tokenId)}>Submit</Button>
+              {/* //TODO: HIDE ONE */}
+              <Button onClick={() => setValidateModalId(bounty.tokenId)}>Validate</Button>
             </Grid>
           </Grid>
         </Grid>
