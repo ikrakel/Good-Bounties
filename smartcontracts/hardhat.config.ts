@@ -6,7 +6,6 @@ import "@nomiclabs/hardhat-etherscan";
 import "@nomiclabs/hardhat-waffle";
 import "@openzeppelin/hardhat-upgrades";
 import "hardhat-gas-reporter";
-import "hardhat-deploy";
 
 import type { HardhatUserConfig } from "hardhat/config";
 
@@ -49,7 +48,7 @@ const config: HardhatUserConfig = {
       chainId: 42220,
     },
     polygonMumbai: {
-      url: "https://matic-mumbai.chainstacklabs.com",
+      url: "https://rpc-mumbai.maticvigil.com",
       accounts: deployer,
       chainId: 80001,
     },
@@ -69,11 +68,6 @@ const config: HardhatUserConfig = {
     currency: "USD",
     // coinmarketcap: COINMARKETCAP_API_KEY,
     token: "ETH",
-  },
-  namedAccounts: {
-    deployer: {
-      default: 0,
-    },
   },
 };
 

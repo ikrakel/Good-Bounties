@@ -19,7 +19,7 @@ async function main() {
 
   console.log(`Bounty Stake Contract: ${bountyStakeContract.address}`);
 
-  pgBountiesContract.setStakingContractAddress(bountyStakeContract.address);
+  await pgBountiesContract.connect(creator).setStakingContractAddress(bountyStakeContract.address);
 
   console.log("Done");
 }
