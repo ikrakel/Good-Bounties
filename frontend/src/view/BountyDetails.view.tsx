@@ -3,7 +3,7 @@ import { Text } from "../components/Text";
 import { useMemo } from "react";
 import { MockBounties } from "../data/MockData";
 import { Flex } from "../components/Common/Flex";
-import { Chip, Grid, useTheme } from "@mui/joy";
+import { Button, Chip, Grid, useTheme } from "@mui/joy";
 import { StatusColors } from "../models/StatusEnum";
 import { differenceInDays } from "date-fns";
 import { LocationOn } from "@mui/icons-material";
@@ -15,6 +15,10 @@ export const BountyDetailsView = () => {
   const bounty = useMemo(() => {
     return MockBounties.find((bounty) => bounty.id === Number(params.id));
   }, [params]);
+
+  const donate = () => {};
+
+  const submit = () => {};
 
   if (!bounty) return <></>;
   return (
@@ -57,6 +61,12 @@ export const BountyDetailsView = () => {
               <Text sx={{ fontSize: "1.2rem" }}>{bounty.location}</Text>
               <Text type="light">Location</Text>
             </Flex>
+          </Grid>
+          <Grid xs={12} display="flex" columnGap={2}>
+            <Button color="success" onClick={() => donate()}>
+              Donate
+            </Button>
+            <Button onClick={() => submit()}>Submit</Button>
           </Grid>
         </Grid>
       </Grid>
