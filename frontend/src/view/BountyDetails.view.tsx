@@ -1,4 +1,5 @@
 import { useLocation, useParams } from "react-router-dom";
+import { ethers } from "ethers";
 import { Text } from "../components/Text";
 import { useMemo, useState, useEffect } from "react";
 import { MockBounties } from "../data/MockData";
@@ -82,12 +83,21 @@ export const BountyDetailsView = () => {
     loadBounty();
   }, [params]);
 
+  const prizeToString = () => {
+    if (!bounty.prize) {
+      return "0";
+    }
+    const amount = ethers.utils.formatUnits(ethers.BigNumber.from(bounty.prize.toString()));
+
+    return parseFloat(amount).toFixed(2).toString();
+  }
+
   const submit = () => {};
 
   if (!bounty) return <></>;
   return (
     <>
-      {donateModalId && <DonateModal id={donateModalId} close={() => setDonateModalId(undefined)} />}
+      {donateModalId && <DonateModal bounty={bounty} close={() => setDonateModalId(undefined)} />}
       <Flex y gap3>
         <Text sx={{ textAlign: "center" }} type="header">
           {bounty.title}
@@ -104,7 +114,7 @@ export const BountyDetailsView = () => {
             <Grid xs={6}>
               <Flex y>
                 <Text color="success" type="body" sx={{ fontSize: "1.5rem" }}>
-                  ${bounty.prize}
+                  <>{prizeToString()} MATIC</>
                 </Text>
                 <Text type="light">Reward</Text>
               </Flex>

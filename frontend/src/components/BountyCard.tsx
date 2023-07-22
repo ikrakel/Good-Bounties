@@ -8,6 +8,7 @@ import { differenceInDays, format } from "date-fns";
 import { Clickable } from "./css/Button";
 import { useNavigate } from "react-router-dom";
 import { Bounty } from "../models/Bounty.Model";
+import { ethers } from "ethers";
 
 const stateToStatus = {
   0: "Open",
@@ -35,6 +36,15 @@ export const BountyCard: FC<Props> = ({
 }) => {
   const theme = useTheme();
   const navigate = useNavigate();
+
+  const prizeToString = (prize: number) => {
+    if (!prize) {
+      return "0";
+    }
+    const amount = ethers.utils.formatUnits(ethers.BigNumber.from(prize.toString()));
+
+    return parseFloat(amount).toFixed(2).toString();
+  }
   return (
     <Card
       onClick={() => navigate(`/bounty/${id}`)}
@@ -103,7 +113,7 @@ export const BountyCard: FC<Props> = ({
         </Flex>
         <Flex x xsb ye>
           <Flex y sx={{ justifySelf: "flex-end" }}>
-            <Text sx={{ mt: 3, fontWeight: "bold", fontSize: "0.8rem" }}>${prize.toLocaleString()} donated</Text>
+            <Text sx={{ mt: 3, fontWeight: "bold", fontSize: "0.8rem" }}>{prizeToString(prize)} MATIC donated</Text>
 
             <Flex x xsb yc>
               <Text
