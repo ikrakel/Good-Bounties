@@ -2,8 +2,7 @@
 
 pragma solidity ^0.8.19;
 
-import { PGBountiesManager } from "./PGBountiesManager.sol";
-import { PGBountyState, Bounty } from "./interfaces/IPGBountiesHandler.sol";
+import {PGBountyState, Bounty, IPGBountiesHandler} from "./interfaces/IPGBountiesHandler.sol";
 
 /*
  * The BountyStakeContract is designed to facilitate staking on NFT Bounties. Each NFT
@@ -33,7 +32,7 @@ interface IBountyStakeContract {
 }
 
 contract BountyStakeContract is IBountyStakeContract {
-    address public bountyContractAddress;
+    IPGBountiesHandler public pgBountiesHandler;
 
     // Event declarations
     event StakeMade(
@@ -51,8 +50,8 @@ contract BountyStakeContract is IBountyStakeContract {
     mapping(uint256 => mapping(address => uint256)) public stakes;
     mapping(uint256 => uint256) public totalStakesPerTokenId;
 
-    constructor(address _bountyNFT) {
-        bountyContractAddress = _bountyNFT;
+    constructor(IPGBountiesHandler _bountyNFT) {
+        pgBountiesHandler = _bountyNFT;
     }
 
     function getStake(
@@ -65,7 +64,10 @@ contract BountyStakeContract is IBountyStakeContract {
     function stake(
         uint256 _tokenId
     ) external payable override(IBountyStakeContract) {
-        require(PGBountiesManager(bountyContractAddress).ownerOf(_tokenId) != address(0), "Bounty does not exist");
+        require(
+            pgBountiesHandler.fetchBounty(_tokenId).owner != address(0),
+            "Bounty does not exist"
+        );
         require(msg.value > 0, "Stake must be greater than 0");
 
         // Add the new stake to the mapping
@@ -78,16 +80,23 @@ contract BountyStakeContract is IBountyStakeContract {
     function withdraw(
         uint256 _tokenId
     ) external override(IBountyStakeContract) {
-        require(PGBountiesManager(bountyContractAddress).ownerOf(_tokenId) != address(0), "Bounty does not exist");
-        Bounty memory bounty = PGBountiesManager(bountyContractAddress).fetchBounty(_tokenId);
+        require(
+            pgBountiesHandler.fetchBounty(_tokenId).owner != address(0),
+            "Bounty does not exist"
+        );
+        Bounty memory bounty = pgBountiesHandler.fetchBounty(_tokenId);
 
-        require(bounty.state == PGBountyState.VALIDATED || bounty.state == PGBountyState.EXPIRED, "Bounty's state does not allow withdrawls");
+        require(
+            bounty.state == PGBountyState.VALIDATED ||
+                bounty.state == PGBountyState.EXPIRED,
+            "Bounty's state does not allow withdrawls"
+        );
 
-        if(bounty.state == PGBountyState.VALIDATED) {
+        if (bounty.state == PGBountyState.VALIDATED) {
             _withdrawForContributors(_tokenId, msg.sender, bounty);
         }
 
-        if(bounty.state == PGBountyState.EXPIRED) {
+        if (bounty.state == PGBountyState.EXPIRED) {
             _withdrawForStakers(_tokenId, msg.sender);
         }
     }
@@ -97,13 +106,16 @@ contract BountyStakeContract is IBountyStakeContract {
         address _claimer,
         Bounty memory bounty
     ) internal {
-        require(bounty.contributor == _claimer, "Only the contributor can withdraw");
+        require(
+            bounty.contributor == _claimer,
+            "Only the contributor can withdraw"
+        );
         require(totalStakesPerTokenId[_tokenId] > 0, "No funds to withdraw");
 
         uint256 availableForBounty = totalStakesPerTokenId[_tokenId];
         totalStakesPerTokenId[_tokenId] = 0;
 
-        PGBountiesManager(bountyContractAddress).claimBounty(_tokenId);
+        pgBountiesHandler.claimBounty(_tokenId);
         payable(_claimer).transfer(availableForBounty);
     }
 
