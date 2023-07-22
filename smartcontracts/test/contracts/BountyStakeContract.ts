@@ -1,11 +1,14 @@
 import chai from "chai";
 import { ethers, waffle } from "hardhat";
 import { solidity } from "ethereum-waffle";
+import dayjs from "dayjs";
 
 import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
-import type { BountyStakeContract } from "../../typechain-types";
+import type { BountyStakeContract, BountyContract } from "../../typechain-types";
 import { Artifacts } from "../shared";
+import { findEvent, ensureTimestamp } from "../shared/utils";
+
 
 chai.use(solidity);
 
@@ -18,14 +21,18 @@ describe("BountyStakeContract", () => {
   let addr1: SignerWithAddress;
   let addr2: SignerWithAddress;
 
+  let bountyContract: BountyContract;
+  let openBountyEvent: any;
   let bountyStakeContract: BountyStakeContract;
+
+  let deadline = dayjs().add(1, "day").unix();
+  let period = deadline - dayjs().unix();
 
   beforeEach(async () => {
     [creator, addr1, addr2] = await ethers.getSigners();
   });
 
   it("can be deployed", async () => {
-    // TODO: Add an actual ERC721 deploy here and replace the address below
     const action = deployContract(creator, Artifacts.BountyStakeContract, [
       "0x33041027dd8F4dC82B6e825FB37ADf8f15d44053"
     ]);
@@ -34,9 +41,9 @@ describe("BountyStakeContract", () => {
   });
 
   const builder = async () => {
-    // TODO: Add an actual ERC721 deploy here and replace the address below
+    bountyContract = await deployContract(creator, Artifacts.BountyContract, []) as BountyContract;
     return deployContract(creator, Artifacts.BountyStakeContract, [
-      "0x33041027dd8F4dC82B6e825FB37ADf8f15d44053"
+      bountyContract.address
     ]) as Promise<BountyStakeContract>;
   };
 
@@ -47,17 +54,19 @@ describe("BountyStakeContract", () => {
   describe("functions", () => {
     beforeEach(async () => {
       bountyStakeContract = await builder();
+      const tx = await bountyContract.connect(addr1).openBounty(deadline, period, "uri");
+      openBountyEvent = await findEvent(tx, "Transfer");
     });
 
     it("allows for a user to stake", async () => {
-      const tokenID = 1;
+      const tokenID = openBountyEvent.args.tokenId;
       await bountyStakeContract.connect(addr1).stake(tokenID, { value: parseUnits("1") });
 
       expect(await getBalanceOfStake(tokenID, addr1.address)).to.eq(parseUnits("1"));
     });
 
     it("allows for more than 1 user to stake", async () => {
-      const tokenID = 1;
+      const tokenID = openBountyEvent.args.tokenId;
       await bountyStakeContract.connect(addr1).stake(tokenID, { value: parseUnits("1") });
       await bountyStakeContract.connect(addr2).stake(tokenID, { value: parseUnits("2") });
 
@@ -66,7 +75,12 @@ describe("BountyStakeContract", () => {
     });
 
     it("allows the users to withdraw their stake", async () => {
-      const tokenID = 1;
+      const tokenID = openBountyEvent.args.tokenId;
+
+      // expireBounty
+      await ensureTimestamp(dayjs().add(5, "day").unix());
+      await bountyContract.expireBounty(tokenID);
+
       await bountyStakeContract.connect(addr1).stake(tokenID, { value: parseUnits("1") });
       expect(await getBalanceOfStake(tokenID, addr1.address)).to.eq(parseUnits("1"));
 
@@ -75,7 +89,12 @@ describe("BountyStakeContract", () => {
     });
 
     it("does not allow anyone but the user to withdraw the stake", async () => {
-      const tokenID = 1;
+      const tokenID = openBountyEvent.args.tokenId;
+
+      // expireBounty
+      await ensureTimestamp(dayjs().add(5, "day").unix());
+      await bountyContract.expireBounty(tokenID);
+
       await bountyStakeContract.connect(addr1).stake(tokenID, { value: parseUnits("1") });
       expect(await getBalanceOfStake(tokenID, addr1.address)).to.eq(parseUnits("1"));
 
