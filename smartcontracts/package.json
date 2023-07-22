@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "ETH Global Paris 2023 Contracts",
   "author": "ikrakel",
+  "type": "module",
   "dependencies": {
     "@ethersproject/abi": "^5.0.0",
     "@ethersproject/bytes": "^5.0.0",

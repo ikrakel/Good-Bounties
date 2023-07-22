@@ -118,5 +118,10 @@ export function handleBountyCreated(event: BountyCreated): void {
   bounty.save();
 }
 
-export function handleStateUpdate(): void {
+export function handleStateUpdate(event: any): void {
+  let bounty = Bounty.load(event.params.tokenId.toString());
+  if (bounty) {
+    bounty.status = event.params.state.toString();
+    bounty.save();
+  }
 }

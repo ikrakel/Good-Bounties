@@ -47,4 +47,14 @@ dataSources:
       eventHandlers:
         - event: BountyCreated(indexed uint256,indexed address,uint8,uint256,uint256)
           handler: handleBountyCreated
+        - event: ProofSubmitted(indexed uint256,indexed address,uint8,string)
+          handler: handleBountyCreated
+        - event: ProofValidated(indexed uint256,indexed address,uint8)
+          handler: handleBountyCreated
+        - event: ProofDenied(indexed uint256,indexed address,uint8)
+          handler: handleBountyCreated
+        - event: BountyClaimed(indexed uint256,indexed address,uint8)
+          handler: handleBountyCreated
+        - event: BountyExpired(indexed uint256,indexed address,uint8)
+          handler: handleBountyCreated
       file: ./src/handler.ts
