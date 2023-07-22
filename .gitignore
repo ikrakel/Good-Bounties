@@ -3,3 +3,4 @@ typechain-types
 artifacts
 cache
 .DS_Store
+.vscode/settings.json
