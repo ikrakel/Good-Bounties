@@ -19,7 +19,7 @@ contract BountyContract is ERC721URIStorage {
         uint256 verificationPeriod;
         uint256 submittedTimestamp;
         address payable owner;
-        address contributor;
+        address payable contributor;
         string attestationHash;
         PGBountyState state;
     }
@@ -80,7 +80,7 @@ contract BountyContract is ERC721URIStorage {
 
         bounty.attestationHash = _attestationHash;
         bounty.state = PGBountyState.SUBMITTED;
-        bounty.contributor = msg.sender;
+        bounty.contributor = payable(msg.sender);
         bounty.submittedTimestamp = block.timestamp;
 
         emit ProofSubmitted(_bountyId, msg.sender, _attestationHash);
