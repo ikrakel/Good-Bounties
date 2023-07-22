@@ -6,6 +6,7 @@ import "@nomiclabs/hardhat-etherscan";
 import "@nomiclabs/hardhat-waffle";
 import "@openzeppelin/hardhat-upgrades";
 import "hardhat-gas-reporter";
+import "hardhat-deploy";
 
 import type { HardhatUserConfig } from "hardhat/config";
 
@@ -35,6 +36,7 @@ const config: HardhatUserConfig = {
       },
     },
   },
+  defaultNetwork: "hardhat",
   networks: {
     alfajores: {
       url: "https://alfajores-forno.celo-testnet.org",
@@ -61,7 +63,17 @@ const config: HardhatUserConfig = {
     // apiKey: <api_key> ,
   },
   gasReporter: {
-    currency: "ETH",
+    enabled: false,
+    outputFile: "gas-report.txt",
+    noColors: true,
+    currency: "USD",
+    // coinmarketcap: COINMARKETCAP_API_KEY,
+    token: "ETH",
+  },
+  namedAccounts: {
+    deployer: {
+      default: 0,
+    },
   },
 };
 
