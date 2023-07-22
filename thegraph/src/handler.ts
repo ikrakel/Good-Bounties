@@ -1,4 +1,4 @@
-import { BigInt } from "@graphprotocol/graph-ts"
+import { BigInt, ipfs, json } from "@graphprotocol/graph-ts"
 import {
   BountyStakeContract,
   BountyContract,
@@ -80,14 +80,42 @@ export function handleBountyCreated(event: BountyCreated): void {
     bounty.deadline = bountyContract.getBounty(event.params.tokenId).submissionDeadline;
     bounty.status = bountyContract.getBounty(event.params.tokenId).state;
 
-    /* TODO: Add these fields with the IPFS lookup
-      title: String! # loaded from IPFS
-      description: String! # loaded from IPFS
-      criteria: String! # loaded from IPFS
-      location: String! # loaded from IPFS
-      imageUrl: String! # loaded from IPFS
-    */
+    let bountyURI = bountyContract.tokenURI(event.params.tokenId);
+    bounty.uri = bountyURI;
+
+    let hash = bountyURI.split("ipfs://").join("");
+    let data = ipfs.cat(hash);
+    if (data) {
+      let value = json.fromBytes(data).toObject();
+      let image = value.get("image");
+      if (image) {
+        let h = image.toString();
+        let imageHash = h.split("ipfs://").join("");
+        bounty.imageUrl = "https://ipfs.io/ipfs/" + imageHash;
+      }
+
+      let title = value.get("title");
+      if (title) {
+        bounty.title = title;
+      }
+
+      let description = value.get("description");
+      if (description) {
+        bounty.description = description;
+      }
+
+      let criteria = value.get("criteria");
+      if (criteria) {
+        bounty.criteria = criteria;
+      }
+
+      let location = value.get("location");
+      if (location) {
+        bounty.location = location;
+      }
+    }
   }
+  bounty.save();
 }
 
 export function handleStateUpdate(event: StateUpdate): void {
