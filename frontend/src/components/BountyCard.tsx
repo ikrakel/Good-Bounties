@@ -55,7 +55,7 @@ export const BountyCard: FC<Props> = ({
         p: 0,
         "&:hover": { ...Clickable },
         backgroundColor: theme.palette.background.body,
-        width: "330px",
+        width: "100%",
       }}
     >
       <Flex

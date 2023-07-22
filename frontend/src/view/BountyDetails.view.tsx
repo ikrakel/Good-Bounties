@@ -60,10 +60,10 @@ export const BountyDetailsView = () => {
   const theme = useTheme();
   const { signer, provider } = useWeb3Auth();
 
-  const [donateModalId, setDonateModalId] = useState<Bounty>();
-  const [submitModalId, setSubmitModalId] = useState<Bounty>();
-  const [validateModalId, setValidateModalId] = useState<number>();
-  const [claimModalId, setClaimModalId] = useState<number>();
+  const [donateModal, setDonateModal] = useState<Bounty>();
+  const [submitModal, setSubmitModal] = useState<Bounty>();
+  const [validateModal, setValidateModal] = useState<Bounty>();
+  const [claimModal, setClaimModal] = useState<Bounty>();
   const [tab, setTab] = useState(0);
 
   const { data: bounty, refetch } = useQuery(["getBountyById", params.id], async () => {
@@ -79,26 +79,26 @@ export const BountyDetailsView = () => {
     );
   return (
     <>
-      {submitModalId && (
+      {submitModal && (
         <SubmissionModal
           bounty={bounty}
           close={() => {
-            setSubmitModalId(undefined);
+            setSubmitModal(undefined);
             refetch();
           }}
         />
       )}
-      {donateModalId && (
+      {donateModal && (
         <DonateModal
           bounty={bounty}
           close={() => {
-            setDonateModalId(undefined);
+            setDonateModal(undefined);
             refetch();
           }}
         />
       )}
-      {claimModalId && <ClaimModal bounty={bounty} close={() => setClaimModalId(undefined)} />}
-      {validateModalId && <ValidateModal bounty={bounty} close={() => setValidateModalId(undefined)} />}
+      {claimModal && <ClaimModal bounty={bounty} close={() => setClaimModal(undefined)} />}
+      {validateModal && <ValidateModal bounty={bounty} close={() => setValidateModal(undefined)} />}
       <Flex y gap3>
         <Text sx={{ textAlign: "center" }} type="header">
           {bounty.title}
@@ -145,13 +145,13 @@ export const BountyDetailsView = () => {
               </Flex>
             </Grid>
             <Grid xs={12} display="flex" columnGap={2}>
-              <Button variant="soft" color="success" onClick={() => setDonateModalId(bounty)}>
+              <Button variant="soft" color="success" onClick={() => setDonateModal(bounty)}>
                 Donate
               </Button>
-              <Button onClick={() => setSubmitModalId(bounty.tokenId)}>Submit</Button>
+              <Button onClick={() => setSubmitModal(bounty)}>Submit</Button>
               {/* //TODO: HIDE ONE */}
-              <Button onClick={() => setValidateModalId(bounty.tokenId)}>Validate</Button>
-              <Button color="success" variant="outlined" onClick={() => setClaimModalId(bounty.tokenId)}>
+              <Button onClick={() => setValidateModal(bounty)}>Validate</Button>
+              <Button color="success" variant="outlined" onClick={() => setClaimModal(bounty)}>
                 Claim
               </Button>
             </Grid>
