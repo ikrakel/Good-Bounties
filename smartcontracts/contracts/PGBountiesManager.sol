@@ -81,11 +81,11 @@ contract PGBountiesManager is ERC721URIStorage, IPGBountiesHandler {
     }
 
     function validateProof(
-        uint256 _bountyId,
-        DelegatedAttestationRequest calldata _request
-    ) external {
+        uint256 _bountyId
+    ) external // DelegatedAttestationRequest calldata _request
+    {
         _checksBeforeValidation(_bountyId);
-        eas.verifyAttest(_request);
+        // eas.verifyAttest(_request);
 
         Bounty storage bounty = idToBounties[_bountyId];
         bounty.state = PGBountyState.VALIDATED;
