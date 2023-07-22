@@ -1,39 +1,33 @@
-import { SmartToy } from "@mui/icons-material";
-import {
-  Button,
-  Link,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemDecorator,
-  useTheme,
-} from "@mui/joy";
+import { Button, CircularProgress, Link, useTheme } from "@mui/joy";
 import { cloneElement, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Text } from "./Text";
 import { Flex } from "./Common/Flex";
-import { Web3Auth } from "@web3auth/modal";
 import { useWeb3Auth } from "../contexts/Web3AuthProvider";
 //@ts-expect-error
 import Identicon from "identicon.js";
-
-const Items = [
-  {
-    name: "Discover",
-    path: "main",
-  },
-  {
-    name: "Start a project",
-    path: "create",
-  },
-];
+import { ADAPTER_STATUS } from "@web3auth/base";
+import { useGlobalContext } from "../contexts/GlobalContext";
 
 export const Topbar = () => {
   const theme = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { web3AuthModalPack, signer } = useWeb3Auth();
+  const { setCreateModalOpen } = useGlobalContext();
+
+  const Items = [
+    {
+      name: "Discover",
+      path: "main",
+    },
+    {
+      name: "Start a project",
+      onClick: () => setCreateModalOpen(true),
+    },
+  ];
+
+  const { web3AuthModalPack, signIn, signer } = useWeb3Auth();
 
   const avatar = useMemo(() => {
     if (!signer) return;
@@ -60,7 +54,7 @@ export const Topbar = () => {
             <Link
               key={item.path}
               sx={{ whiteSpace: "nowrap" }}
-              onClick={() => navigate(item.path)}
+              onClick={() => (item.onClick ? item.onClick() : navigate(item.path))}
             >
               {item.name}
             </Link>
@@ -72,7 +66,7 @@ export const Topbar = () => {
         Public bounties
       </Text>
 
-      {web3AuthModalPack?.web3Auth?.status === "connected" ? (
+      {web3AuthModalPack?.web3Auth?.status === ADAPTER_STATUS.CONNECTED ? (
         <Flex
           x
           yc
@@ -82,25 +76,26 @@ export const Topbar = () => {
             p: 0.2,
             px: 2,
             border: "1px solid " + theme.palette.divider,
-            backgroundColor: theme.palette.background.surface,
+            backgroundColor: theme.palette.neutral.solidBg,
             borderRadius: "sm",
             cursor: "pointer",
             "&:hover": {
               opacity: 0.9,
             },
+            minWidth: "120px",
           }}
         >
-          <img src={avatar} height="40px" />
-          <Text sx={{ color: "white" }}>{`${signer?.address.slice(
-            0,
-            6
-          )}...${signer?.address.slice(-4)}`}</Text>
+          {!signer?.address ? (
+            <CircularProgress sx={{ width: "100%" }} />
+          ) : (
+            <>
+              <img src={avatar} height="40px" alt="avatar" />
+              <Text sx={{ color: "white" }}>{`${signer?.address.slice(0, 6)}...${signer?.address.slice(-4)}`}</Text>
+            </>
+          )}
         </Flex>
       ) : (
-        <Button
-          sx={{ width: "120px" }}
-          onClick={() => web3AuthModalPack?.signIn()}
-        >
+        <Button sx={{ width: "120px" }} onClick={() => signIn()}>
           Sign in
         </Button>
       )}

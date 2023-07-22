@@ -2,6 +2,7 @@ import { Navigate, useRoutes } from "react-router-dom";
 import { MainLayout } from "../components/MainLayout";
 import { MainView } from "../view/Main.view";
 import { NotFoundView } from "../view/NotFound.view";
+import { BountyDetailsView } from "../view/BountyDetails.view";
 
 export const AppRouter = () => {
   const routes = useRoutes([
@@ -12,7 +13,10 @@ export const AppRouter = () => {
     {
       path: "/",
       element: <MainLayout />,
-      children: [{ path: "main", element: <MainView /> }],
+      children: [
+        { path: "main", element: <MainView /> },
+        { path: "details/:id", element: <BountyDetailsView /> },
+      ],
     },
   ]);
   return routes;

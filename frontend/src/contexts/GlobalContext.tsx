@@ -1,20 +1,33 @@
 import { useQuery } from "@tanstack/react-query";
-import { createContext, FC, ReactNode, useContext, useMemo } from "react";
+import { createContext, Dispatch, FC, ReactNode, SetStateAction, useContext, useMemo, useState } from "react";
+import { AModal } from "../components/Common/AModal";
+import { Box, Input } from "@mui/joy";
+import { CreateBountyModal } from "../components/CreateBountyModal";
 
-interface GlobalContextType {}
-const initialState = {};
+interface GlobalContextType {
+  setCreateModalOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+const initialState = {
+  setCreateModalOpen: () => {},
+};
 
 const GlobalContext = createContext<GlobalContextType>(initialState);
 
-export const GlobalContextProvider: FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+export const GlobalContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+
   const value = useMemo(() => {
-    return {};
-  }, []);
+    return { setCreateModalOpen };
+  }, [setCreateModalOpen]);
 
   return (
-    <GlobalContext.Provider value={value}>{children}</GlobalContext.Provider>
+    <GlobalContext.Provider value={value}>
+      {createModalOpen && (
+        <CreateBountyModal createModalOpen={createModalOpen} setCreateModalOpen={setCreateModalOpen} />
+      )}
+      {children}
+    </GlobalContext.Provider>
   );
 };
 

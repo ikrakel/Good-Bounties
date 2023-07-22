@@ -2,6 +2,8 @@ import { Box, useTheme } from "@mui/joy";
 import { Outlet } from "react-router-dom";
 import { Topbar } from "./Topbar";
 import { Flex } from "./Common/Flex";
+import { AModal } from "./Common/AModal";
+import { useState } from "react";
 
 export const MainLayout = () => {
   const theme = useTheme();

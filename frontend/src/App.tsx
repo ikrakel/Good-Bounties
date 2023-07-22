@@ -16,20 +16,20 @@ const queryClient = new QueryClient();
 export default function App() {
   return (
     <CssVarsProvider theme={theme}>
-      <QueryClientProvider client={queryClient}>
-        <GlobalContextProvider>
-          <DialogProvider>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <Web3AuthProvider>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <QueryClientProvider client={queryClient}>
+          <Web3AuthProvider>
+            <GlobalContextProvider>
+              <DialogProvider>
                 <BrowserRouter>
                   <Toaster position="top-right" />
                   <AppRouter />
                 </BrowserRouter>
-              </Web3AuthProvider>
-            </LocalizationProvider>
-          </DialogProvider>
-        </GlobalContextProvider>
-      </QueryClientProvider>
+              </DialogProvider>
+            </GlobalContextProvider>
+          </Web3AuthProvider>
+        </QueryClientProvider>
+      </LocalizationProvider>
     </CssVarsProvider>
   );
 }

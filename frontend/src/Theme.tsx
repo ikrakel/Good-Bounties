@@ -4,39 +4,39 @@ import { deepmerge } from "@mui/utils";
 
 const { unstable_sxConfig: joySxConfig, ...joyTheme } = extendJoyTheme({
   colorSchemes: {
-    dark: {
-      palette: {
-        background: {
-          body: "#0a1929",
-          level1: "#001e3c",
-          surface: "#142434",
-        },
-        neutral: {
-          solidBg: "#001e3c",
-          solidActiveBg: "#132f4c",
-          solidHoverBg: "#132f4c",
-          plainHoverBg: "#132f4c",
-          solidBorder: "#143559",
-          softBorder: "#143559",
-          plainBorder: "#143559",
-          outlinedBorder: "#143559",
-        },
-        divider: "#143559",
-        common: {
-          white: "#b2bac2",
-        },
-        text: {
-          primary: "#b2bac2",
-        },
-      },
-    },
-    light: {
-      palette: {
-        background: {
-          surface: "#142434",
-        },
-      },
-    },
+    // dark: {
+    //   palette: {
+    //     background: {
+    //       body: "#0a1929",
+    //       level1: "#001e3c",
+    //       surface: "#142434",
+    //     },
+    //     neutral: {
+    //       solidBg: "#001e3c",
+    //       solidActiveBg: "#132f4c",
+    //       solidHoverBg: "#132f4c",
+    //       plainHoverBg: "#132f4c",
+    //       solidBorder: "#143559",
+    //       softBorder: "#143559",
+    //       plainBorder: "#143559",
+    //       outlinedBorder: "#143559",
+    //     },
+    //     divider: "#143559",
+    //     common: {
+    //       white: "#b2bac2",
+    //     },
+    //     text: {
+    //       primary: "#b2bac2",
+    //     },
+    //   },
+    // },
+    // light: {
+    //   palette: {
+    //     background: {
+    //       surface: "#142434",
+    //     },
+    //   },
+    // },
   },
   fontSize: {
     lg: "0.9rem",
@@ -167,8 +167,7 @@ const { unstable_sxConfig: muiSxConfig, ...muiTheme } = extendMuiTheme({
         FilledInput: {
           bg: joyTheme.colorSchemes.dark.palette.neutral.solidBg,
           hoverBg: joyTheme.colorSchemes.dark.palette.neutral.solidHoverBg,
-          disabledBg:
-            joyTheme.colorSchemes.dark.palette.neutral.solidDisabledBg,
+          disabledBg: joyTheme.colorSchemes.dark.palette.neutral.solidDisabledBg,
         },
         TableCell: {
           border: "#143559",
@@ -206,10 +205,7 @@ theme.generateCssVars = (colorScheme) => ({
     ...joyTheme.generateCssVars(colorScheme).css,
   },
   //@ts-ignore
-  vars: deepmerge(
-    muiTheme.generateCssVars(colorScheme).vars,
-    joyTheme.generateCssVars(colorScheme).vars
-  ),
+  vars: deepmerge(muiTheme.generateCssVars(colorScheme).vars, joyTheme.generateCssVars(colorScheme).vars),
 });
 
 theme.unstable_sxConfig = {

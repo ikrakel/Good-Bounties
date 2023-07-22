@@ -14,24 +14,13 @@ interface Props {
   error?: string;
 }
 
-export const AModal: FC<Props> = ({
-  close,
-  submit,
-  cancel,
-  open,
-  submitText,
-  title,
-  children,
-  error,
-}) => {
+export const AModal: FC<Props> = ({ close, submit, cancel, open, submitText, title, children, error }) => {
   return (
     <Modal open={open !== undefined ? open : true} onClose={close}>
-      <ModalDialog>
+      <ModalDialog size="lg" variant="outlined">
         <Text type="header2">{title}</Text>
         <Divider sx={{ my: 2 }} />
-        <Box sx={{ minWidth: "50vw", minHeight: "80px", ...FlexCenterCol }}>
-          {children}
-        </Box>
+        <Box sx={{ minWidth: "50vw", minHeight: "80px" }}>{children}</Box>
         <Divider sx={{ my: 2 }} />
 
         {error && (
@@ -44,7 +33,7 @@ export const AModal: FC<Props> = ({
 
         <Box sx={{ ...FlexCenterRow, columnGap: 4 }}>
           <Button
-            color="danger"
+            variant="soft"
             onClick={() => {
               cancel && cancel();
               close();
@@ -54,6 +43,7 @@ export const AModal: FC<Props> = ({
             Cancel
           </Button>
           <Button
+            variant="soft"
             disabled={!!error}
             onClick={() => {
               submit && submit();

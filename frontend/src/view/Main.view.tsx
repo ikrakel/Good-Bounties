@@ -1,13 +1,4 @@
-import {
-  Autocomplete,
-  Chip,
-  Divider,
-  Input,
-  Select,
-  TextField,
-  Typography,
-  useTheme,
-} from "@mui/joy";
+import { Autocomplete, Box, Chip, Divider, Input, Select, TextField, Typography, useTheme } from "@mui/joy";
 import { StatusColors, StatusEnum } from "../models/StatusEnum";
 import { Text } from "../components/Text";
 import { Flex } from "../components/Common/Flex";
@@ -19,6 +10,7 @@ import { useMemo } from "react";
 //@ts-expect-error
 import Identicon from "identicon.js";
 import { addDays } from "date-fns";
+import placeholder from "../assets/placeholder.jpg";
 
 export const MainView = () => {
   const theme = useTheme();
@@ -54,7 +46,34 @@ export const MainView = () => {
         />
       </Flex>
 
-      <Flex
+      <Box
+        sx={{
+          backgroundColor: theme.palette.background.level1,
+          mx: -4,
+          py: 4,
+          mb: -4,
+          px: 4,
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(330px, 1fr))",
+          gap: 2,
+        }}
+      >
+        {new Array(10).fill("").map((x, i) => (
+          <BountyCard
+            image={placeholder}
+            key={i}
+            deadline={addDays(new Date(), 30)}
+            title="Plant 1000 trees in France"
+            location="France"
+            prize={10000}
+            status={StatusEnum.Open}
+            upvotesCount={120}
+            submitterName={`${signer?.address.slice(0, 6)}...${signer?.address.slice(-4)}` || ""}
+            submitterAvatar={avatar}
+          />
+        ))}
+      </Box>
+      {/* <Flex
         x
         xsa
         gap3
@@ -65,24 +84,7 @@ export const MainView = () => {
           py: 4,
           mb: -4,
         }}
-      >
-        {new Array(10).fill("").map((x, i) => (
-          <BountyCard
-            key={i}
-            deadline={addDays(new Date(), 30)}
-            title="Plant 1000 trees in France"
-            location="France"
-            prize={10000}
-            status={StatusEnum.Open}
-            upvotesCount={120}
-            submitterName={
-              `${signer?.address.slice(0, 6)}...${signer?.address.slice(-4)}` ||
-              ""
-            }
-            submitterAvatar={avatar}
-          />
-        ))}
-      </Flex>
+      ></Flex> */}
     </>
   );
 };
