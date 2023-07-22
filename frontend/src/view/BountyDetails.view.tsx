@@ -13,6 +13,8 @@ import { Bounty } from "../models/Bounty.Model";
 import { execute } from "../.graphclient";
 import { gql } from "@apollo/client";
 import { MATIC_PRICE } from "../data/Constants";
+import { useQueries, useQuery } from "@tanstack/react-query";
+import { SubmissionModal } from "../components/SubmissionModal";
 
 const GET_BOUNTIES = gql`
   query GetBounty($tokenId: Int!) {
@@ -49,41 +51,22 @@ const stateToStatus = {
 };
 
 export const BountyDetailsView = () => {
-  const [bounty, setBounty] = useState<Bounty>();
   const params = useParams();
   const theme = useTheme();
-  const [donateModalId, setDonateModalId] = useState<number>();
+  const [donateModalId, setDonateModalId] = useState<Bounty>();
+  const [submitModalId, setSubmitModalId] = useState<Bounty>();
   const [tab, setTab] = useState(0);
 
-  const loadBounty = async () => {
+  const { data: bounty, refetch } = useQuery(["getBountyById", params.id], async () => {
     const result = await execute(GET_BOUNTIES, { tokenId: Number(params.id) });
+    return result?.data?.bounty as Bounty;
+  });
 
-    if (result.data?.bounty) {
-      const b = result.data.bounty;
-      setBounty({
-        tokenId: b.tokenId,
-        image: b.imageUrl,
-        title: b.title,
-        location: b.location,
-        status: b.status,
-        upvotesCount: 0,
-        prize: b.totalStaked,
-        submitterName: b.createdBy,
-        submitterAvatar: b.createdBy,
-        // @ts-ignore
-        totalStakers: b.totalStakers,
-        description: b.description,
-        criteria: b.criteria,
-        deadline: new Date(Number(b.deadline) * 1000),
-      });
-    }
-  };
+  const loadBounty = async () => {};
 
   useEffect(() => {
     loadBounty();
   }, [params]);
-
-  const submit = () => {};
 
   if (!bounty)
     return (
@@ -93,19 +76,35 @@ export const BountyDetailsView = () => {
     );
   return (
     <>
-      {donateModalId && <DonateModal bounty={bounty} close={() => setDonateModalId(undefined)} />}
+      {submitModalId && (
+        <SubmissionModal
+          bounty={bounty}
+          close={() => {
+            setSubmitModalId(undefined);
+            refetch();
+          }}
+        />
+      )}
+      {donateModalId && (
+        <DonateModal
+          bounty={bounty}
+          close={() => {
+            setDonateModalId(undefined);
+            refetch();
+          }}
+        />
+      )}
       <Flex y gap3>
         <Text sx={{ textAlign: "center" }} type="header">
           {bounty.title}
         </Text>
         <Grid container spacing={2} justifyContent={"center"}>
           <Grid xs={7}>
-            <img src={bounty.image} width="100%" />
+            <img src={bounty.imageUrl} width="100%" />
           </Grid>
           <Grid xs={5} container rowSpacing={8} height={"80%"} my={"auto"} px={4}>
             <Grid xs={12}>
-              {/* @ts-ignore */}
-              <Text sx={{ color: StatusColors[bounty.status], fontSize: "1rem" }}>
+              <Text sx={{ color: StatusColors[bounty.status as keyof typeof StatusColors], fontSize: "1rem" }}>
                 ◉ {stateToStatus[bounty.status as keyof typeof stateToStatus]}
               </Text>
             </Grid>
@@ -113,7 +112,7 @@ export const BountyDetailsView = () => {
               <Flex y>
                 <Text color="success" type="body" sx={{ fontSize: "1.5rem" }}>
                   $
-                  {(MATIC_PRICE * Number(ethers.utils.formatEther(bounty.prize))).toLocaleString("en-us", {
+                  {(MATIC_PRICE * Number(ethers.utils.formatEther(bounty.totalStaked))).toLocaleString("en-us", {
                     maximumSignificantDigits: 4,
                   })}
                 </Text>
@@ -122,7 +121,6 @@ export const BountyDetailsView = () => {
             </Grid>
             <Grid xs={6}>
               <Flex y>
-                {/* @ts-ignore */}
                 <Text sx={{ fontSize: "1.2rem" }}>{bounty.totalStakers}</Text>
                 <Text type="light">Donors</Text>
               </Flex>
@@ -130,7 +128,7 @@ export const BountyDetailsView = () => {
             <Grid xs={6}>
               <Flex y>
                 <Text sx={{ fontSize: "1.2rem" }} type="body">
-                  {differenceInDays(bounty.deadline, new Date())}
+                  {differenceInDays(new Date(bounty.deadline * 1000), new Date())}
                 </Text>
                 <Text type="light">Days to expire</Text>
               </Flex>
@@ -142,10 +140,10 @@ export const BountyDetailsView = () => {
               </Flex>
             </Grid>
             <Grid xs={12} display="flex" columnGap={2}>
-              <Button variant="soft" color="success" onClick={() => setDonateModalId(bounty.tokenId)}>
+              <Button variant="soft" color="success" onClick={() => setDonateModalId(bounty)}>
                 Donate
               </Button>
-              <Button onClick={() => submit()}>Submit</Button>
+              <Button onClick={() => setSubmitModalId(bounty)}>Submit</Button>
             </Grid>
           </Grid>
         </Grid>
@@ -161,17 +159,11 @@ export const BountyDetailsView = () => {
         {tab === 0 && (
           <Flex y={true}>
             <Text type="header2">Description</Text>
-            <Text type="body">
-              {/* @ts-ignore */}
-              {bounty.description}
-            </Text>
+            <Text type="body">{bounty.description}</Text>
             <Text type="header2" sx={{ mt: 3 }}>
               Acceptance Criteria
             </Text>
-            <Text type="body">
-              {/* @ts-ignore */}
-              {bounty.criteria}
-            </Text>
+            <Text type="body">{bounty.criteria}</Text>
           </Flex>
         )}
 

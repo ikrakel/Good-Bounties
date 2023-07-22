@@ -17,6 +17,7 @@ import { execute } from "../.graphclient";
 import { gql } from "@apollo/client";
 import { ethers } from "ethers";
 import { Bounty } from "../models/Bounty.Model";
+import { useQuery } from "@tanstack/react-query";
 
 const GET_BOUNTIES = gql`
   query GetBounties {
@@ -39,22 +40,19 @@ const GET_BOUNTIES = gql`
 
 export const MainView = () => {
   const theme = useTheme();
-  const [allBounties, setAllBounties] = useState([]);
 
   //Bounty ID. Set to undefined to close the modal, or to a Bounty ID to open it
   const [donateModalBounty, setDonateModalBounty] = useState<Bounty>();
 
-  const getAllBounties = async () => {
-    const result = await execute(GET_BOUNTIES, {});
+  const { data: allBounties, refetch } = useQuery(
+    ["getBounties"],
+    async () => {
+      const result = await execute(GET_BOUNTIES, {});
 
-    if (result.data?.bounties && result.data.bounties.length > 0) {
-      setAllBounties(result.data.bounties);
-    }
-  };
-
-  useEffect(() => {
-    getAllBounties();
-  }, []);
+      return (result?.data?.bounties as Bounty[]) || [];
+    },
+    { initialData: [] }
+  );
 
   const getDate = (bounty: any) => {
     const date = new Date(Number(bounty.deadline) * 1000);
@@ -68,7 +66,15 @@ export const MainView = () => {
 
   return (
     <>
-      {donateModalBounty && <DonateModal bounty={donateModalBounty} close={() => setDonateModalBounty(undefined)} />}
+      {donateModalBounty && (
+        <DonateModal
+          bounty={donateModalBounty}
+          close={() => {
+            setDonateModalBounty(undefined);
+            refetch();
+          }}
+        />
+      )}
       <Text type="header">Discover</Text>
       <Flex x yc gap3 my={2}>
         <Input variant="soft" placeholder="Search" />
@@ -102,15 +108,15 @@ export const MainView = () => {
         {allBounties.map((bounty: any, i) => (
           <BountyCard
             tokenId={bounty.tokenId}
-            image={bounty.imageUrl || placeholder}
+            imageUrl={bounty.imageUrl || placeholder}
             key={bounty.tokenId}
             deadline={getDate(bounty)}
             title={bounty.title}
             location={bounty.location}
-            prize={bounty.totalStaked}
+            totalStaked={bounty.totalStaked}
             status={bounty.status}
             upvotesCount={0}
-            submitterName={getShortWallet(bounty)}
+            createdBy={getShortWallet(bounty)}
             submitterAvatar={"https://i.pravatar.cc/50?u=" + bounty.submitterName}
             onClickDonate={() => setDonateModalBounty(bounty)}
           />

@@ -18,21 +18,31 @@ const stateToStatus = {
   3: "Completed",
 };
 
-interface Props extends Bounty {
+interface Props {
+  tokenId: number;
+  imageUrl: string;
+  title: string;
+  location: string;
+  status: number;
+  upvotesCount: number;
+  totalStaked: number;
+  createdBy: string;
+  submitterAvatar: string;
+  deadline: Date;
   onClickDonate: () => void;
 }
 
 export const BountyCard: FC<Props> = ({
   tokenId,
   location,
-  prize,
+  totalStaked: prize,
   status,
   submitterAvatar,
-  submitterName,
+  createdBy: submitterName,
   title,
   upvotesCount,
   deadline,
-  image,
+  imageUrl: image,
   onClickDonate,
 }) => {
   const theme = useTheme();

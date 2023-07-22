@@ -6,8 +6,8 @@ export enum StatusEnum {
 }
 
 export const StatusColors = {
-  [StatusEnum.Open]: "purple",
-  [StatusEnum.Submitted]: "blue",
-  [StatusEnum.Expired]: "red",
-  [StatusEnum.Completed]: "green",
+  0: "purple",
+  1: "blue",
+  2: "red",
+  3: "green",
 };

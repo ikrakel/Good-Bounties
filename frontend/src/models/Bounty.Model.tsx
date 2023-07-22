@@ -1,12 +1,15 @@
 export interface Bounty {
   tokenId: number;
-  image: string;
+  imageUrl: string;
   title: string;
   location: string;
   status: number;
   upvotesCount: number;
-  prize: number;
-  submitterName: string;
+  totalStaked: number;
+  totalStakers: number;
+  createdBy: string;
   submitterAvatar: string;
-  deadline: Date;
+  deadline: number;
+  criteria: string;
+  description: string;
 }
