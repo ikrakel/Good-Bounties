@@ -51,15 +51,18 @@ contract BountyContract is ERC721URIStorage {
 
     function openBounty(
         uint256 submissionDeadline,
-        uint256 verificationPeriod
-    ) public payable returns (uint256) {
+        uint256 verificationPeriod,
+        string memory uri
+    ) external payable returns (uint256) {
         require(reward > 0, "The reward must be bigger than 0.");
+        //TODO: validate time fields
 
         tokenIds.increment();
 
         uint256 newTokenId = tokenIds.current();
 
-        _mint(msg.sender, newTokenId);
+        _safeMint(msg.sender, newTokenId);
+        _setTokenURI(newTokenId, uri);
 
         createBounty(newTokenId, submissionDeadline, verificationPeriod);
 
