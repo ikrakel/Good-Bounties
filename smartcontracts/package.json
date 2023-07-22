@@ -54,6 +54,7 @@
   "scripts": {
     "build": "hardhat compile",
     "test": "hardhat test",
+    "deploy:bounties": "npx hardhat run scripts/deployBountyStakeContract.ts",
     "lint": "solhint contracts/**.sol && prettier --check contracts/**/*.sol",
     "docgen": "solidity-docgen --solc-module solc-0.8.7 --templates=docgen/templates"
   }

@@ -35,6 +35,7 @@ const config: HardhatUserConfig = {
       },
     },
   },
+  defaultNetwork: "hardhat",
   networks: {
     alfajores: {
       url: "https://alfajores-forno.celo-testnet.org",
@@ -47,7 +48,7 @@ const config: HardhatUserConfig = {
       chainId: 42220,
     },
     polygonMumbai: {
-      url: "https://matic-mumbai.chainstacklabs.com",
+      url: "https://rpc-mumbai.maticvigil.com",
       accounts: deployer,
       chainId: 80001,
     },
@@ -61,7 +62,12 @@ const config: HardhatUserConfig = {
     // apiKey: <api_key> ,
   },
   gasReporter: {
-    currency: "ETH",
+    enabled: false,
+    outputFile: "gas-report.txt",
+    noColors: true,
+    currency: "USD",
+    // coinmarketcap: COINMARKETCAP_API_KEY,
+    token: "ETH",
   },
 };
 
