@@ -6,6 +6,7 @@ import { Text } from "./Text";
 import { useWeb3Auth } from "../contexts/Web3AuthProvider";
 import BountyStakeContract from "./abi/BountyStakeContract.json";
 import { Bounty } from "../models/Bounty.Model";
+import { toast } from "react-hot-toast";
 
 interface Props {
   bounty: Bounty;
@@ -31,6 +32,11 @@ export const DonateModal: FC<Props> = ({ bounty, close }) => {
 
     close();
     setWaitingForTransaction(false);
+    toast.success(
+      `Successfully donated ${Number(ethers.utils.formatEther(amount)).toLocaleString("en-us", {
+        maximumSignificantDigits: 4,
+      })} MATIC!`
+    );
   };
 
   return (
@@ -51,8 +57,11 @@ export const DonateModal: FC<Props> = ({ bounty, close }) => {
               max={100}
               marks={[
                 { value: 0, label: "0" },
-                { value: 50, label: Number(walletBalance) / 2 },
-                { value: 100, label: walletBalance },
+                {
+                  value: 50,
+                  label: (Number(walletBalance) / 2).toLocaleString("en-us", { maximumSignificantDigits: 4 }),
+                },
+                { value: 100, label: Number(walletBalance).toLocaleString("en-us", { maximumSignificantDigits: 4 }) },
               ]}
             />
           </Flex>

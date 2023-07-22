@@ -62,12 +62,6 @@ export const BountyDetailsView = () => {
     return result?.data?.bounty as Bounty;
   });
 
-  const loadBounty = async () => {};
-
-  useEffect(() => {
-    loadBounty();
-  }, [params]);
-
   if (!bounty)
     return (
       <Flex y xc yc height="calc(100vh)">
