@@ -35,7 +35,6 @@ const config: HardhatUserConfig = {
       },
     },
   },
-  defaultNetwork: "hardhat",
   networks: {
     alfajores: {
       url: "https://alfajores-forno.celo-testnet.org",
