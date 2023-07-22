@@ -31,6 +31,10 @@ interface IBountyStakeContract {
 contract BountyStakeContract is IBountyStakeContract {
   address public bountyNFT;
 
+  // Event declarations
+  event StakeMade(uint indexed tokenId, address indexed staker, uint amount);
+  event StakeWithdrawn(uint indexed tokenId, address indexed staker, uint amount);
+
   // We're mapping a tokenId to another mapping that links an address to its stake
   mapping(uint => mapping(address => uint)) public stakes;
   mapping(uint => uint) public totalStakesPerTokenId;
@@ -51,6 +55,8 @@ contract BountyStakeContract is IBountyStakeContract {
     // Add the new stake to the mapping
     stakes[_tokenId][msg.sender] += msg.value;
     totalStakesPerTokenId[_tokenId] += msg.value;
+
+    emit StakeMade(_tokenId, msg.sender, msg.value);
   }
 
   function withdraw(uint _tokenId) external override(IBountyStakeContract) {
@@ -60,6 +66,8 @@ contract BountyStakeContract is IBountyStakeContract {
     // TODO: Depending on the state of bounty it should be withdrawn for the staker or for the contributor
     // _withdrawForContributors(_tokenId, msg.sender);
     _withdrawForStakers(_tokenId, msg.sender);
+
+    emit StakeWithdrawn(_tokenId, msg.sender, stakeAmount);
   }
 
   function _withdrawForContributors(uint _tokenId, address _claimer) internal {
