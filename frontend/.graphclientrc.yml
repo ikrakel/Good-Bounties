@@ -1,0 +1,5 @@
+sources:
+  - name: ethglobal-paris-2023
+    handler:
+      graphql:
+        endpoint: https://api.thegraph.com/subgraphs/name/ikrakel/ethglobal-paris-2023

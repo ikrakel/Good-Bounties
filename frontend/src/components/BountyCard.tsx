@@ -9,6 +9,13 @@ import { Clickable } from "./css/Button";
 import { useNavigate } from "react-router-dom";
 import { Bounty } from "../models/Bounty.Model";
 
+const stateToStatus = {
+  0: "Open",
+  1: "Submitted",
+  2: "Expired",
+  3: "Completed",
+}
+
 interface Props extends Bounty {
   onClickDonate: () => void;
 }
@@ -51,7 +58,8 @@ export const BountyCard: FC<Props> = ({
         }}
       >
         <Flex sx={{ borderRadius: "5px", p: 0.8, backgroundColor: theme.palette.background.body, mt: 1, ml: 1 }}>
-          <Text sx={{ color: StatusColors[status], fontSize: "0.8rem" }}>◉ {status}</Text>
+          {/* @ts-ignore */}
+          <Text sx={{ color: StatusColors[status], fontSize: "0.8rem" }}>◉ {stateToStatus[status]}</Text>
         </Flex>
 
         <Flex

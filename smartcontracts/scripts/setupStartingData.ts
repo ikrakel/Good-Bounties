@@ -22,47 +22,47 @@ const ALL_BOUNTIES = [
   {
     submissionDeadline: "2023-08-05",
     verificationPeriod: "24",
-    uri: "ipfs://bafyreibo2hgtka66poydoa6z53lhfzub4ieeixyf7iyqogux2u242srj4q/metadata.json"
+    uri: "ipfs://bafyreiec6im33lakrwviiqv22zo77vckrm5i4j3a2i5fdgt2yflsw7uy34/metadata.json"
   },
   {
     submissionDeadline: "2023-09-20",
     verificationPeriod: "24",
-    uri: "ipfs://bafyreibo2hgtka66poydoa6z53lhfzub4ieeixyf7iyqogux2u242srj4q/metadata.json"
+    uri: "ipfs://bafyreifco4hbickumqmpilscekecwh7cad6n4wdav7p7lqd2ej3io2rch4/metadata.json"
   },
   {
     submissionDeadline: "2023-11-30",
     verificationPeriod: "24",
-    uri: "ipfs://bafyreibo2hgtka66poydoa6z53lhfzub4ieeixyf7iyqogux2u242srj4q/metadata.json"
+    uri: "ipfs://bafyreignmnoewbfifx7f3fl54lssq3zgaot7yvvcwoicq4d2upxrhnbjr4/metadata.json"
   },
   {
     submissionDeadline: "2023-08-30",
     verificationPeriod: "24",
-    uri: "ipfs://bafyreibo2hgtka66poydoa6z53lhfzub4ieeixyf7iyqogux2u242srj4q/metadata.json"
+    uri: "ipfs://bafyreih4y24ydlfw5adeopzomvneh55v5lranxqw7ukmynspm6lcfr72ii/metadata.json"
   },
   {
     submissionDeadline: "2023-07-20",
     verificationPeriod: "24",
-    uri: "ipfs://bafyreibo2hgtka66poydoa6z53lhfzub4ieeixyf7iyqogux2u242srj4q/metadata.json"
+    uri: "ipfs://bafyreia33fx53vrvh4sa7gotg2kuoqlozrqtb5a7u3czpoxojp3t5cvc6a/metadata.json"
   },
   {
     submissionDeadline: "2023-11-15",
     verificationPeriod: "24",
-    uri: "ipfs://bafyreibo2hgtka66poydoa6z53lhfzub4ieeixyf7iyqogux2u242srj4q/metadata.json"
+    uri: "ipfs://bafyreiffaoi4peh3lhtk6kawfi3z2ox3laog5fopnxmi4sbwelt7gdxf5m/metadata.json"
   },
   {
     submissionDeadline: "2023-08-31",
     verificationPeriod: "24",
-    uri: "ipfs://bafyreibo2hgtka66poydoa6z53lhfzub4ieeixyf7iyqogux2u242srj4q/metadata.json"
+    uri: "ipfs://bafyreiamhpbucwx25pbaxuoynrdyd46v5xybzcwfxo7pb5zgoliquzksku/metadata.json"
   },
   {
     submissionDeadline: "2023-08-15",
     verificationPeriod: "24",
-    uri: "ipfs://bafyreibo2hgtka66poydoa6z53lhfzub4ieeixyf7iyqogux2u242srj4q/metadata.json"
+    uri: "ipfs://bafyreifiitlsi5c2v43qdky4ghqiou4yj6v223fjq63diogqlvsjy266xi/metadata.json"
   },
   {
     submissionDeadline: "2023-10-10",
     verificationPeriod: "24",
-    uri: "ipfs://bafyreibo2hgtka66poydoa6z53lhfzub4ieeixyf7iyqogux2u242srj4q/metadata.json"
+    uri: "ipfs://bafyreicfkjdksonuoycwqyls4corjpuudkmnewvv3r7uf45mml7n33vgma/metadata.json"
   }
 ]
 
@@ -75,7 +75,7 @@ async function main() {
   console.log(`Creator is ${creator.address}`);
 
   const pgBountiesManager = new ethers.Contract(
-    "0x26b39829C82b0158852d3285A9c86117297ca237",
+    "0x87aD9FbE6c054fe330c996d101716De439eaaB9c",
     BountyContract.abi,
     provider
   );

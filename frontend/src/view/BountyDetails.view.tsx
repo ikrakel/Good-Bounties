@@ -1,6 +1,6 @@
 import { useLocation, useParams } from "react-router-dom";
 import { Text } from "../components/Text";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { MockBounties } from "../data/MockData";
 import { Flex } from "../components/Common/Flex";
 import { Button, Chip, Divider, Grid, Tab, TabList, TabPanel, Tabs, useTheme } from "@mui/joy";
@@ -8,16 +8,78 @@ import { StatusColors } from "../models/StatusEnum";
 import { differenceInDays } from "date-fns";
 import { LocationOn } from "@mui/icons-material";
 import { DonateModal } from "../components/DonateModal";
+import { Bounty } from "../models/Bounty.Model";
+
+import { execute } from "../.graphclient";
+import { gql } from "@apollo/client";
+
+const GET_BOUNTIES = gql`
+  query GetBounty($tokenId: Int!) {
+    bounty(id: $tokenId) {
+      tokenId
+      createdBy
+      deadline
+      status
+      title
+      description
+      criteria
+      location
+      uri
+      imageUrl
+      totalStakers
+      totalStaked
+      bountyStakers {
+        id
+        amount
+        staker {
+          id
+          address
+        }
+      }
+    }
+  }
+`;
+
+const stateToStatus = {
+  0: "Open",
+  1: "Submitted",
+  2: "Expired",
+  3: "Completed",
+};
 
 export const BountyDetailsView = () => {
+  const [bounty, setBounty] = useState({} as Bounty);
   const params = useParams();
   const theme = useTheme();
-
   const [donateModalId, setDonateModalId] = useState<number>();
   const [tab, setTab] = useState(0);
 
-  const bounty = useMemo(() => {
-    return MockBounties.find((bounty) => bounty.id === Number(params.id));
+  const loadBounty = async () => {
+    const result = await execute(GET_BOUNTIES, { tokenId: Number(params.id) });
+
+    if (result.data?.bounty) {
+      const b = result.data.bounty;
+      setBounty({
+        id: b.tokenId,
+        image: b.imageUrl,
+        title: b.title,
+        location: b.location,
+        status: b.status,
+        upvotesCount: 0,
+        prize: b.totalStaked,
+        submitterName: b.createdBy,
+        submitterAvatar: b.createdBy,
+        // @ts-ignore
+        totalStakers: b.totalStakers,
+        description: b.description,
+        criteria: b.criteria,
+        deadline: new Date(Number(b.deadline) * 1000),
+      });
+    }
+  };
+
+  useEffect(() => {
+    loadBounty();
   }, [params]);
 
   const submit = () => {};
@@ -36,7 +98,10 @@ export const BountyDetailsView = () => {
           </Grid>
           <Grid xs={5} container rowSpacing={8} height={"80%"} my={"auto"} px={4}>
             <Grid xs={12}>
-              <Text sx={{ color: StatusColors[bounty.status], fontSize: "1rem" }}>◉ {bounty.status}</Text>
+              {/* @ts-ignore */}
+              <Text sx={{ color: StatusColors[bounty.status], fontSize: "1rem" }}>
+                ◉ {stateToStatus[bounty.status]}
+              </Text>
             </Grid>
             <Grid xs={6}>
               <Flex y>
@@ -48,7 +113,8 @@ export const BountyDetailsView = () => {
             </Grid>
             <Grid xs={6}>
               <Flex y>
-                <Text sx={{ fontSize: "1.2rem" }}>7</Text>
+                {/* @ts-ignore */}
+                <Text sx={{ fontSize: "1.2rem" }}>{bounty.totalStakers}</Text>
                 <Text type="light">Donors</Text>
               </Flex>
             </Grid>
@@ -83,7 +149,22 @@ export const BountyDetailsView = () => {
           </Button>
         </Flex>
         <Divider sx={{ mt: -2 }} />
-        {tab === 0 && <Flex>Add description and criterias here</Flex>}
+        {tab === 0 && (
+          <Flex y={true}>
+            <Text type="header2">Description</Text>
+            <Text type="body">
+              {/* @ts-ignore */}
+              {bounty.description}
+            </Text>
+            <Text type="header2" sx={{ mt: 3 }}>
+              Acceptance Criteria
+            </Text>
+            <Text type="body">
+              {/* @ts-ignore */}
+              {bounty.criteria}
+            </Text>
+          </Flex>
+        )}
 
         {tab === 1 && <Flex>No submissions yet</Flex>}
       </Flex>
