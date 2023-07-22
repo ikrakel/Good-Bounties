@@ -22,6 +22,7 @@ contract BountyContract is ERC721URIStorage {
     error StakingContractIsZero();
     error OnlyOwnerIsAuthorized();
     error OnlyStakingContractIsAuthorized();
+    error BountyHasntExpiredYet();
 
     struct Bounty {
         uint256 tokenId;
@@ -65,6 +66,12 @@ contract BountyContract is ERC721URIStorage {
     event BountyClaimed(
         uint256 indexed tokenId,
         address indexed contributor,
+        PGBountyState state
+    );
+
+    event BountyExpired(
+        uint256 indexed tokenId,
+        address indexed owner,
         PGBountyState state
     );
 
@@ -247,5 +254,16 @@ contract BountyContract is ERC721URIStorage {
             bounty.contributor,
             PGBountyState.CLAIMED
         );
+    }
+
+    function expireBounty(uint256 _bountyId) external {
+        Bounty storage bounty = idToBounties[_bountyId];
+
+        if (bounty.owner == address(0)) revert BountyDoesntExist();
+        if (block.timestamp > bounty.submissionDeadline)
+            revert BountyHasntExpiredYet();
+
+        bounty.state == PGBountyState.EXPIRED;
+        emit BountyExpired(_bountyId, owner, PGBountyState.EXPIRED);
     }
 }
