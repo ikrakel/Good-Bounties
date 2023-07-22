@@ -16,6 +16,7 @@ import { DonateModal } from "../components/DonateModal";
 
 import { execute } from '../.graphclient';
 import { gql } from "@apollo/client";
+import { ethers } from "ethers";
 
 const GET_BOUNTIES = gql`
   query GetBounties {
@@ -41,14 +42,13 @@ export const MainView = () => {
   const [allBounties, setAllBounties] = useState([]);
 
   //Bounty ID. Set to undefined to close the modal, or to a Bounty ID to open it
-  const [donateModalId, setDonateModalId] = useState<number>();
+  const [donateModalBounty, setDonateModalBounty] = useState<number>();
 
   const getAllBounties = async () => {
     const result = await execute(GET_BOUNTIES, {})
 
     if (result.data?.bounties && result.data.bounties.length > 0) {
       setAllBounties(result.data.bounties);
-      console.log(result.data.bounties);
     }
   }
 
@@ -68,7 +68,7 @@ export const MainView = () => {
 
   return (
     <>
-      {donateModalId && <DonateModal id={donateModalId} close={() => setDonateModalId(undefined)} />}
+      {donateModalBounty && <DonateModal bounty={donateModalBounty} close={() => setDonateModalBounty(undefined)} />}
       <Text type="header">Discover</Text>
       <Flex x yc gap3 my={2}>
         <Input variant="soft" placeholder="Search by keyword" />
@@ -112,7 +112,7 @@ export const MainView = () => {
             upvotesCount={0}
             submitterName={getShortWallet(bounty)}
             submitterAvatar={"https://i.pravatar.cc/50?u=" + bounty.submitterName}
-            onClickDonate={() => setDonateModalId(bounty.id)}
+            onClickDonate={() => setDonateModalBounty(bounty)}
           />
         ))}
       </Box>
