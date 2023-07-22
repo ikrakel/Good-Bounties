@@ -60,7 +60,7 @@ const web3AuthConfig: Web3AuthConfig = {
 interface Web3AuthContextType {
   web3AuthModalPack?: Web3AuthModalPack;
   provider?: ethers.providers.Web3Provider;
-  signer?: ethers.Signer;
+  signer?: ethers.providers.JsonRpcSigner;
   status: "connected" | "disconnected";
   signIn: () => Promise<void>;
   walletBalance: string;
@@ -79,7 +79,7 @@ export const Web3AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   //Just used as a way to re-render the component
   const [status, setStatus] = useState<"connected" | "disconnected">("disconnected");
 
-  const [signer, setSigner] = useState<ethers.Signer>();
+  const [signer, setSigner] = useState<ethers.providers.JsonRpcSigner>();
   const [provider, setProvider] = useState<ethers.providers.Web3Provider>();
   const [walletBalance, setWalletBalance] = useState("0");
 

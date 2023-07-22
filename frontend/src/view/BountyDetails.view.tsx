@@ -47,11 +47,16 @@ const stateToStatus = {
   2: "Expired",
   3: "Completed",
 };
+import { useWeb3Auth } from "../contexts/Web3AuthProvider";
+import { Provider } from "@ethersproject/abstract-provider";
+import storeContributorAttestation from "../lib/eas/eas-offchain-attester";
 
 export const BountyDetailsView = () => {
   const [bounty, setBounty] = useState<Bounty>();
   const params = useParams();
   const theme = useTheme();
+  const { signer, provider } = useWeb3Auth();
+
   const [donateModalId, setDonateModalId] = useState<number>();
   const [tab, setTab] = useState(0);
 
@@ -83,7 +88,19 @@ export const BountyDetailsView = () => {
     loadBounty();
   }, [params]);
 
-  const submit = () => {};
+  const donate = () => {};
+
+  const submit = () => {
+    console.log("submitting");
+    console.log("signer in submit", signer);
+    if (signer) {
+      storeContributorAttestation(signer, "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "ipfsHash");
+    }
+  };
+
+  const verify = () => {
+    console.log("verifying");
+  };
 
   if (!bounty)
     return (
