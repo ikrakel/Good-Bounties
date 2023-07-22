@@ -14,7 +14,7 @@ interface Props {
   close: () => void;
 }
 
-const STAKING_ADDRESS = "0xD47C4d8C55BB0B48694662752dD420329Be12b65";
+const STAKING_ADDRESS = "0x914F89B08965198EAba0aee44865E2A613847b09";
 
 export const ClaimModal: FC<Props> = ({ bounty, close }) => {
   const { walletBalance, signer } = useWeb3Auth();
