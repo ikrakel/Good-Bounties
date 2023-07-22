@@ -30,13 +30,24 @@ const { unstable_sxConfig: joySxConfig, ...joyTheme } = extendJoyTheme({
     //     },
     //   },
     // },
-    // light: {
-    //   palette: {
-    //     background: {
-    //       surface: "#142434",
-    //     },
-    //   },
-    // },
+    light: {
+      palette: {
+        primary: {
+          solidBg: "#165634",
+          mainChannel: "#165634",
+          softBg: "#f1efe7",
+          softColor: "#165634",
+          softHoverBg: "#e8e4d6",
+          plainColor: "#165634",
+          plainHoverBg: "#e8e4d6",
+        },
+        neutral: {
+          softBg: "#f1efe7",
+          softHoverBg: "#e8e4d6",
+          softActiveBg: "#e8e4d6",
+        },
+      },
+    },
   },
   fontSize: {
     lg: "0.9rem",

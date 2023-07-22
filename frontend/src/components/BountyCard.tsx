@@ -9,7 +9,11 @@ import { Clickable } from "./css/Button";
 import { useNavigate } from "react-router-dom";
 import { Bounty } from "../models/Bounty.Model";
 
-export const BountyCard: FC<Bounty> = ({
+interface Props extends Bounty {
+  onClickDonate: () => void;
+}
+
+export const BountyCard: FC<Props> = ({
   id,
   location,
   prize,
@@ -20,6 +24,7 @@ export const BountyCard: FC<Bounty> = ({
   upvotesCount,
   deadline,
   image,
+  onClickDonate,
 }) => {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -95,11 +100,13 @@ export const BountyCard: FC<Bounty> = ({
             <Flex x xsb yc>
               <Text
                 sx={{
-                  color: theme.palette.neutral[600],
+                  color: differenceInDays(deadline, new Date()) < 0 ? "red" : theme.palette.neutral[600],
                   fontSize: "0.8rem",
                 }}
               >
-                Expires in {differenceInDays(deadline, new Date())} days
+                {differenceInDays(deadline, new Date()) < 0
+                  ? `Expired ${differenceInDays(deadline, new Date()) * -1} days ago`
+                  : `Expires in ${differenceInDays(deadline, new Date())} days`}
               </Text>
             </Flex>
           </Flex>
@@ -107,7 +114,7 @@ export const BountyCard: FC<Bounty> = ({
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              console.log("open donation modal");
+              onClickDonate();
             }}
             variant="soft"
             color="success"

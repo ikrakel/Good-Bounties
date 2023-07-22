@@ -6,29 +6,23 @@ import { Close } from "@mui/icons-material";
 import { Countries } from "../data/Countries";
 import { BountyCard } from "../components/BountyCard";
 import { useWeb3Auth } from "../contexts/Web3AuthProvider";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 //@ts-expect-error
 import Identicon from "identicon.js";
 import { addDays } from "date-fns";
 import placeholder from "../assets/placeholder.jpg";
 import { MockBounties } from "../data/MockData";
+import { DonateModal } from "../components/DonateModal";
 
 export const MainView = () => {
   const theme = useTheme();
 
-  //Tmp just for testing
-  const { web3AuthModalPack, signer } = useWeb3Auth();
-  const avatar = useMemo(() => {
-    if (!signer) return "";
-
-    const icon = new Identicon(signer.address, 50);
-    icon.background = [0, 0, 0, 0];
-    return "data:image/png;base64," + icon.toString();
-  }, [signer]);
-  //Tmp just for testing
+  //Bounty ID. Set to undefined to close the modal, or to a Bounty ID to open it
+  const [donateModalId, setDonateModalId] = useState<number>();
 
   return (
     <>
+      {donateModalId && <DonateModal id={donateModalId} close={() => setDonateModalId(undefined)} />}
       <Text type="header">Discover</Text>
       <Flex x yc gap3 my={2}>
         <Input variant="soft" placeholder="Search by keyword" />
@@ -64,7 +58,7 @@ export const MainView = () => {
             id={bounty.id}
             image={bounty.image || placeholder}
             key={bounty.title}
-            deadline={addDays(new Date(), 30)}
+            deadline={bounty.deadline}
             title={bounty.title}
             location={bounty.location}
             prize={bounty.prize}
@@ -72,6 +66,7 @@ export const MainView = () => {
             upvotesCount={bounty.upvotesCount}
             submitterName={bounty.submitterName}
             submitterAvatar={"https://i.pravatar.cc/50?u=" + bounty.submitterName}
+            onClickDonate={() => setDonateModalId(bounty.id)}
           />
         ))}
       </Box>

@@ -8,6 +8,7 @@ import { useWeb3Auth } from "../contexts/Web3AuthProvider";
 import Identicon from "identicon.js";
 import { ADAPTER_STATUS } from "@web3auth/base";
 import { useGlobalContext } from "../contexts/GlobalContext";
+import logo from "../assets/logo.png";
 
 export const Topbar = () => {
   const theme = useTheme();
@@ -46,6 +47,7 @@ export const Topbar = () => {
         px: 4,
         height: "60px",
         borderBottom: "1px solid " + theme.palette.divider,
+        backgroundColor: theme.palette.neutral.softBg,
       }}
     >
       <Flex x yc gap={4}>
@@ -62,9 +64,10 @@ export const Topbar = () => {
         })}
       </Flex>
 
-      <Text color="success" type="header" sx={{ textAlign: "center", textTransform: "none", fontSize: "1.8rem" }}>
-        GoodBounties
-      </Text>
+      <img src={logo} height="50px" />
+      {/* <Text color="success" type="header" sx={{ textAlign: "center", textTransform: "none", fontSize: "1.8rem" }}>
+        
+      </Text> */}
 
       {web3AuthModalPack?.web3Auth?.status === ADAPTER_STATUS.CONNECTED ? (
         <Flex
