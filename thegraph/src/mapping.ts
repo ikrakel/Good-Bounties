@@ -1,54 +1,97 @@
 import { BigInt } from "@graphprotocol/graph-ts"
 import {
   BountyStakeContract,
+  BountyContract,
   StakeMade,
-  StakeWithdrawn
+  StakeWithdrawn,
+  BountyCreated,
+  StateUpdate
 } from "../generated/BountyStakeContract/BountyStakeContract"
-import { ExampleEntity } from "../generated/schema"
+import { Bounty, BountyStaker, Stakers } from "../generated/schema"
 
 export function handleStakeMade(event: StakeMade): void {
-  // Entities can be loaded from the store using a string ID; this ID
-  // needs to be unique across all entities of the same type
-  let entity = ExampleEntity.load(event.transaction.from.toHex())
-
-  // Entities only exist after they have been saved to the store;
-  // `null` checks allow to create entities on demand
-  if (!entity) {
-    entity = new ExampleEntity(event.transaction.from.toHex())
-
-    // Entity fields can be set using simple assignments
-    entity.count = BigInt.fromI32(0)
+  let bounty = Bounty.load(event.params.tokenId.toString());
+  if (!bounty) {
+    bounty = new Bounty(event.params.tokenId.toString());
+    bounty.totalStakers = BigInt.fromI32(1);
+    bounty.totalStaked = event.params.amount;
+    bounty.save();
+  } else {
+    bounty.totalStakers = bounty.totalStakers.plus(BigInt.fromI32(1));
+    bounty.totalStaked = bounty.totalStaked.plus(event.params.amount);
+    bounty.save();
   }
 
-  // BigInt and BigDecimal math are supported
-  entity.count = entity.count + BigInt.fromI32(1)
+  let staker = Stakers.load(event.params.staker.toHexString());
+  if (!staker) {
+    staker = new Stakers(event.params.staker.toHexString());
+    staker.address = event.params.staker.toHexString();
+    staker.stakedAmount = event.params.amount;
+  } else {
+    staker.stakedAmount = staker.stakedAmount.plus(event.params.amount);
+  }
+  staker.save();
 
-  // Entity fields can be set based on event parameters
-  entity.tokenId = event.params.tokenId
-  entity.staker = event.params.staker
-
-  // Entities can be written to the store with `.save()`
-  entity.save()
-
-  // Note: If a handler doesn't require existing field values, it is faster
-  // _not_ to load the entity from the store. Instead, create it fresh with
-  // `new Entity(...)`, set the fields that should be updated and save the
-  // entity back to the store. Fields that were not set or unset remain
-  // unchanged, allowing for partial updates to be applied.
-
-  // It is also possible to access smart contracts from mappings. For
-  // example, the contract that has emitted the event can be connected to
-  // with:
-  //
-  // let contract = Contract.bind(event.address)
-  //
-  // The following functions can then be called on this contract to access
-  // state variables and other data:
-  //
-  // - contract.bountyNFT(...)
-  // - contract.getStake(...)
-  // - contract.stakes(...)
-  // - contract.totalStakesPerTokenId(...)
+  let relationshipId = event.params.tokenId.toString() + "-" + event.params.staker.toHexString();
+  let bountyStaker = BountyStaker.load(relationshipId);
+  if (!bountyStaker) {
+    bountyStaker = new BountyStaker(relationshipId);
+    bountyStaker.bounty = event.params.tokenId.toString();
+    bountyStaker.staker = event.params.staker.toHexString();
+    bountyStaker.stakedAmount = event.params.amount;
+  } else {
+    bountyStaker.stakedAmount = bountyStaker.stakedAmount.plus(event.params.amount);
+  }
+  bountyStaker.save();
 }
 
-export function handleStakeWithdrawn(event: StakeWithdrawn): void {}
+export function handleStakeWithdrawn(event: StakeWithdrawn): void {
+  let bounty = Bounty.load(event.params.tokenId.toString());
+  if (bounty) {
+    bounty.totalStakers = bounty.totalStakers.minus(BigInt.fromI32(1));
+    bounty.totalStaked = bounty.totalStaked.minus(event.params.amount);
+    bounty.save();
+  }
+
+  let staker = Stakers.load(event.params.staker.toHexString());
+  if (staker) {
+    staker.stakedAmount = staker.stakedAmount.minus(event.params.amount);
+    staker.save();
+  }
+
+  let relationshipId = event.params.tokenId.toString() + "-" + event.params.staker.toHexString();
+  let bountyStaker = BountyStaker.load(relationshipId);
+  if (!bountyStaker) {
+    bountyStaker.stakedAmount = bountyStaker.stakedAmount.minus(event.params.amount);
+    bountyStaker.save();
+  }
+}
+
+export function handleBountyCreated(event: BountyCreated): void {
+  let bounty = Bounty.load(event.params.tokenId.toString());
+  if (!bounty) {
+    bounty = new Bounty(event.params.tokenId.toString());
+    bounty.createdBy = event.params.owner;
+    bounty.tokenId = event.params.tokenId.toString();
+    bounty.totalStakers = BigInt.fromI32(0);
+    bounty.totalStaked = BigInt.fromI32(0);
+
+    let bountyContract = BountyContract.bind(event.address);
+    bounty.deadline = bountyContract.getBounty(event.params.tokenId).submissionDeadline;
+    bounty.status = bountyContract.getBounty(event.params.tokenId).state;
+
+    /* TODO: Add these fields with the IPFS lookup
+      title: String! # loaded from IPFS
+      description: String! # loaded from IPFS
+      criteria: String! # loaded from IPFS
+      location: String! # loaded from IPFS
+      imageUrl: String! # loaded from IPFS
+    */
+  }
+}
+
+export function handleStateUpdate(event: StateUpdate): void {
+  let bounty = Bounty.load(event.params.tokenId.toString());
+  bounty.state = event.params.state;
+  bounty.save();
+}

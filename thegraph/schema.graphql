@@ -6,12 +6,15 @@ type Bounty @entity {
   status: String! # enum: OPEN, SUBMITTED, VALIDATED, DISPUTED, CLAIMED, EXPIRED
   title: String! # loaded from IPFS
   description: String! # loaded from IPFS
+  criteria: String! # loaded from IPFS
   location: String! # loaded from IPFS
   imageUrl: String! # loaded from IPFS
-  bountyStakers: [BountyStakers!]! @derivedFrom(field: "bounty")
+  totalStakers: BigInt! # total number of stakers
+  totalStaked: BigInt! # total amount of ETH staked
+  bountyStakers: [BountyStaker!]! @derivedFrom(field: "bounty")
 }
 
-type BountyStakers @entity {
+type BountyStaker @entity {
   id: ID!
   bounty: Bounty!
   staker: Staker!
@@ -22,5 +25,5 @@ type Staker @entity {
   id: ID!
   address: Bytes! # address of the staker
   stakedAmount: BigInt! # amount of ETH staked on all bounties
-  stakedBounties: [BountyStakers!]! @derivedFrom(field: "staker")
+  stakedBounties: [BountyStaker!]! @derivedFrom(field: "staker")
 }
