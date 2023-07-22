@@ -110,7 +110,8 @@ export const BountyDetailsView = () => {
             </Grid>
             <Grid xs={6}>
               <Flex y>
-                <Text sx={{ fontSize: "1.2rem" }}>7</Text>
+                {/* @ts-ignore */}
+                <Text sx={{ fontSize: "1.2rem" }}>{bounty.totalStakers}</Text>
                 <Text type="light">Funders</Text>
               </Flex>
             </Grid>
@@ -145,7 +146,23 @@ export const BountyDetailsView = () => {
           </Button>
         </Flex>
         <Divider sx={{ mt: -2 }} />
-        {tab === 0 && <Flex>Add description and criterias here</Flex>}
+        {tab === 0 &&
+          <Flex y={true}>
+            <Text type="header2">
+              Description
+            </Text>
+            <Text type="body">
+              {/* @ts-ignore */}
+              {bounty.description}
+            </Text>
+            <Text type="header2" sx={{ mt: 3 }}>
+              Acceptance Criteria
+            </Text>
+            <Text type="body">
+              {/* @ts-ignore */}
+              {bounty.criteria}
+            </Text>
+          </Flex>}
 
         {tab === 1 && <Flex>No submissions yet</Flex>}
       </Flex>
