@@ -25,18 +25,18 @@ export const MainView = () => {
       {donateModalId && <DonateModal id={donateModalId} close={() => setDonateModalId(undefined)} />}
       <Text type="header">Discover</Text>
       <Flex x yc gap3 my={2}>
-        <Input variant="soft" placeholder="Search by keyword" />
+        <Input variant="soft" placeholder="Search" />
 
         <Autocomplete
           variant="soft"
-          placeholder="Search by status"
+          placeholder="Filter by status"
           disableClearable
           options={Object.values(StatusEnum)}
         />
 
         <Autocomplete
           variant="soft"
-          placeholder="Search by location"
+          placeholder="Filter by country"
           options={Countries.map((country) => country.name)}
         />
       </Flex>

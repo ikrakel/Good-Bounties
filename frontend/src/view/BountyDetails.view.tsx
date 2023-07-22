@@ -49,7 +49,7 @@ export const BountyDetailsView = () => {
             <Grid xs={6}>
               <Flex y>
                 <Text sx={{ fontSize: "1.2rem" }}>7</Text>
-                <Text type="light">Funders</Text>
+                <Text type="light">Donors</Text>
               </Flex>
             </Grid>
             <Grid xs={6}>
