@@ -15,7 +15,6 @@ import { gql } from "@apollo/client";
 import { MATIC_PRICE } from "../data/Constants";
 
 import { useWeb3Auth } from "../contexts/Web3AuthProvider";
-import storeContributorAttestation from "../lib/eas/eas-offchain-attester";
 import { ValidateModal } from "../components/ValidateModal";
 import { SubmitModal } from "../components/SubmitModal";
 
@@ -91,20 +90,6 @@ export const BountyDetailsView = () => {
   useEffect(() => {
     loadBounty();
   }, [params]);
-
-  const donate = () => {};
-
-  const submit = () => {
-    console.log("submitting");
-    console.log("signer in submit", signer);
-    if (signer) {
-      storeContributorAttestation(signer, "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "ipfsHash");
-    }
-  };
-
-  const verify = () => {
-    console.log("verifying");
-  };
 
   if (!bounty)
     return (

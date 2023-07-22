@@ -6,6 +6,16 @@ import { Text } from "./Text";
 import { useWeb3Auth } from "../contexts/Web3AuthProvider";
 import PGBountiesManagerContract from "./abi/PGBountiesManager.json";
 import { Bounty } from "../models/Bounty.Model";
+import storeContributorAttestation from "../lib/eas/eas-offchain-attester";
+
+//UNUSED FOR NOW
+const submit = (signer: ethers.providers.JsonRpcSigner) => {
+  console.log("submitting");
+  console.log("signer in submit", signer);
+  if (signer) {
+    storeContributorAttestation(signer, "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "ipfsHash");
+  }
+};
 
 interface Props {
   bounty: Bounty;
