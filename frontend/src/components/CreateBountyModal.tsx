@@ -26,8 +26,8 @@ import { ethers } from "ethers";
 import { useDropzone } from "react-dropzone";
 import { Clickable } from "./css/Button";
 import { VerificationPeriods } from "../data/VerificationPeriod";
-import { NFTStorage } from "nft.storage";
 import { EncodedURL } from "nft.storage/dist/src/lib/interface";
+import { uploadMetadata } from "../utils/IpfsUtils";
 
 interface Props {
   createModalOpen: boolean;
@@ -220,29 +220,18 @@ export const CreateBountyModal: FC<Props> = ({ createModalOpen, setCreateModalOp
 
   const submit = async () => {
     if (image) {
-      const nft = {
-        image,
-        name: "NFT",
-        description: "NFT description",
-        properties: {
-          title,
-          description,
-          location,
-          deadline: format(deadline!, "yyyy-MM-dd"),
-          criteria: criterias.join("\n"),
-        },
+      const metadata = {
+        title,
+        description,
+        location,
+        deadline: format(deadline!, "yyyy-MM-dd"),
+        criteria: criterias.join("\n"),
       };
 
-      const client = new NFTStorage({
-        token:
-          process.env.NFT_STORAGE_TOKEN ||
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDc4ZTY0MmNEQ0VjNjM2M0UxMGQ3ZDEyMEM3QTVCZTlFM2MyMTMwNzIiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY5MDA1MzEwMDg1OSwibmFtZSI6ImV0aGdsb2JhbF9wYXJpcyJ9.TkMEx4WyypGr6rXffjCvUJZYFlnWc1k0qvdfkokdk3g",
-      });
-
+      const data = await uploadMetadata(image, metadata);
       setCreateModalOpen(false);
-      const metadata = await client.store(nft);
 
-      setCid(metadata.url);
+      setCid(data.url);
     } else {
       console.log("No image was found.");
     }

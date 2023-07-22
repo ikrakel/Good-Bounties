@@ -1,34 +1,26 @@
-// import { createHelia } from "helia";
-// import { dagJson } from "@helia/dag-json";
-// import { unixfs } from "@helia/unixfs";
-// import { json } from "@helia/json";
+import { NFTStorage } from "nft.storage";
 
-export const dummy = {};
+interface BountyMetadata {
+  title: string;
+  description: string;
+  criteria: string;
+  location: string;
+  deadline: string;
+}
 
-// interface BountyMetadata {
-//   title: string;
-//   description: string;
-//   criteria: string;
-//   location: string;
-//   deadline: string;
-// }
+export const uploadMetadata = async (image: File, metadata: BountyMetadata) => {
+  const nft = {
+    image,
+    name: "NFT",
+    description: "NFT description",
+    properties: metadata,
+  };
 
-// export const UploadMetadata = async (imageFile: File, metadata: BountyMetadata) => {
-//   const helia = await createHelia();
+  const client = new NFTStorage({
+    token:
+      process.env.NFT_STORAGE_TOKEN ||
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDc4ZTY0MmNEQ0VjNjM2M0UxMGQ3ZDEyMEM3QTVCZTlFM2MyMTMwNzIiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY5MDA1MzEwMDg1OSwibmFtZSI6ImV0aGdsb2JhbF9wYXJpcyJ9.TkMEx4WyypGr6rXffjCvUJZYFlnWc1k0qvdfkokdk3g",
+  });
 
-//   const j = json(helia);
-//   const fs = unixfs(helia);
-
-//   const reader = new FileReader();
-//   reader.readAsArrayBuffer(imageFile);
-//   reader.onloadend = async (e) => {
-//     if (e.target?.readyState === FileReader.DONE) {
-//       const arrayBuffer = e.target.result;
-//       const array = new Uint8Array(arrayBuffer as ArrayBuffer);
-//       const imageAddress = await fs.addBytes(array);
-//       const cid = await j.add({ ...metadata, image: imageAddress });
-//       console.log(cid);
-//       console.log(await j.get(cid));
-//     }
-//   };
-// };
+  return await client.store(nft);
+};
