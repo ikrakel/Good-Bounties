@@ -1,6 +1,26 @@
-type ExampleEntity @entity {
+type Bounty @entity {
   id: ID!
-  count: BigInt!
-  tokenId: BigInt! # uint256
-  staker: Bytes! # address
+  tokenId: BigInt! # the token id of the NFT
+  createdBy: Bytes! # address of the owner
+  deadline: BigInt! # timestamp of the deadline
+  status: String! # enum: OPEN, SUBMITTED, VALIDATED, DISPUTED, CLAIMED, EXPIRED
+  title: String! # loaded from IPFS
+  description: String! # loaded from IPFS
+  location: String! # loaded from IPFS
+  imageUrl: String! # loaded from IPFS
+  bountyStakers: [BountyStakers!]! @derivedFrom(field: "bounty")
+}
+
+type BountyStakers @entity {
+  id: ID!
+  bounty: Bounty!
+  staker: Staker!
+  amount: BigInt!
+}
+
+type Staker @entity {
+  id: ID!
+  address: Bytes! # address of the staker
+  stakedAmount: BigInt! # amount of ETH staked on all bounties
+  stakedBounties: [BountyStakers!]! @derivedFrom(field: "staker")
 }
