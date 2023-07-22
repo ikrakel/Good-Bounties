@@ -32,16 +32,29 @@ contract BountyContract is ERC721URIStorage {
 
     event BountyCreated(
         uint256 indexed tokenId,
-        address owner,
-        address contributor,
-        string attestationHash,
-        PGBountyState state
+        address indexed owner,
+        PGBountyState state,
+        uint256 submissionDeadline,
+        uint256 verificationPeriod
     );
 
     event ProofSubmitted(
         uint256 indexed tokenId,
         address indexed contributor,
+        PGBountyState state,
         string attestationHash
+    );
+
+    event ProofValidated(
+        uint256 indexed tokenId,
+        address indexed contributor,
+        PGBountyState state
+    );
+
+    event ProofDenied(
+        uint256 indexed tokenId,
+        address indexed contributor,
+        PGBountyState state
     );
 
     using Counters for Counters.Counter;
@@ -91,7 +104,12 @@ contract BountyContract is ERC721URIStorage {
         bounty.contributor = payable(msg.sender);
         bounty.submittedTime = block.timestamp;
 
-        emit ProofSubmitted(_bountyId, msg.sender, _attestationHash);
+        emit ProofSubmitted(
+            _bountyId,
+            msg.sender,
+            PGBountyState.SUBMITTED,
+            _attestationHash
+        );
     }
 
     function validateProof(
@@ -100,7 +118,15 @@ contract BountyContract is ERC721URIStorage {
     ) external {
         _checksBeforeValidation(_bountyId);
         eas.verifyAttest(request);
-        idToBounties[_bountyId].state = PGBountyState.VALIDATED;
+
+        Bounty storage bounty = idToBounties[_bountyId];
+        bounty.state = PGBountyState.VALIDATED;
+
+        emit ProofValidated(
+            _bountyId,
+            bounty.contributor,
+            PGBountyState.VALIDATED
+        );
     }
 
     function denyProof(uint256 _bountyId) external {
@@ -112,6 +138,8 @@ contract BountyContract is ERC721URIStorage {
         } else {
             bounty.state = PGBountyState.OPEN;
         }
+
+        emit ProofDenied(_bountyId, bounty.contributor, bounty.state);
     }
 
     function _checksBeforeValidation(uint256 _bountyId) internal view {
@@ -144,9 +172,9 @@ contract BountyContract is ERC721URIStorage {
         emit BountyCreated(
             tokenId,
             owner,
-            payable(address(0)),
-            "",
-            PGBountyState.OPEN
+            PGBountyState.OPEN,
+            submissionDeadline,
+            verificationPeriod
         );
     }
 
