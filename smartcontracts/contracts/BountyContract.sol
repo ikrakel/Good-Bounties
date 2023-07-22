@@ -24,7 +24,7 @@ contract BountyContract is ERC721URIStorage {
         PGBountyState state;
     }
 
-    event idBountyCreated(
+    event BountyCreated(
         uint256 indexed tokenId,
         address owner,
         address contributor,
