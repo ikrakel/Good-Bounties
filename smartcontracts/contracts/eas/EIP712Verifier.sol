@@ -9,7 +9,7 @@ import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import {
     AttestationRequest,
     AttestationRequestData,
-    DelegatedAttestationRequest,
+    DelegatedAttestationRequest
 } from "./EASCustom.sol";
 
 import {EIP712Signature, InvalidSignature} from "./Common.sol";

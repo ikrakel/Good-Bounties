@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.19;
 
-import {Attestation, EIP712Verifier} from "./Common.sol";
+import {Attestation, EIP712Signature} from "./Common.sol";
+import {EIP712Verifier} from "./EIP712Verifier.sol";
 
 /**
  * @dev A struct representing the arguments of the attestation request.
@@ -34,6 +35,8 @@ struct DelegatedAttestationRequest {
 }
 
 contract EASCustom is EIP712Verifier {
+    constructor() EIP712Verifier("EAS", "1.0.0") {}
+
     function verifyAttest(
         DelegatedAttestationRequest calldata delegatedRequest
     ) external {
