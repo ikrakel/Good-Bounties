@@ -98,7 +98,8 @@ export const BountyDetailsView = () => {
           </Grid>
           <Grid xs={5} container rowSpacing={8} height={"80%"} my={"auto"} px={4}>
             <Grid xs={12}>
-              <Text sx={{ color: StatusColors[bounty.status], fontSize: "1rem" }}>◉ {bounty.status}</Text>
+              {/* @ts-ignore */}
+              <Text sx={{ color: StatusColors[bounty.status], fontSize: "1rem" }}>◉ {stateToStatus[bounty.status]}</Text>
             </Grid>
             <Grid xs={6}>
               <Flex y>
