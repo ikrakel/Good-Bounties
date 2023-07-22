@@ -6,6 +6,8 @@ import { useWeb3Auth } from "../contexts/Web3AuthProvider";
 import { useDropzone } from "react-dropzone";
 import { Clickable } from "./css/Button";
 import { Bounty } from "../models/Bounty.Model";
+import { uploadMetadata } from "../utils/IpfsUtils";
+import { CIDString } from "nft.storage/dist/src/lib/interface";
 
 interface Props {
   close: () => void;
@@ -22,7 +24,16 @@ export const SubmissionModal: FC<Props> = ({ bounty, close }) => {
 
   const submit = async () => {
     setWaitingForTransaction(true);
-    //Do everything here
+
+    if (image) {
+      const data = await uploadMetadata(image, {
+        description,
+      });
+
+      // call the contract with data.ipnft
+    } else {
+      console.log("Please upload image");
+    }
     setWaitingForTransaction(false);
   };
 

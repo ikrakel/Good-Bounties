@@ -8,7 +8,11 @@ interface BountyMetadata {
   deadline: string;
 }
 
-export const uploadMetadata = async (image: File, metadata: BountyMetadata) => {
+interface ProofMetadata {
+  description: string;
+}
+
+export const uploadMetadata = async (image: File, metadata: BountyMetadata | ProofMetadata) => {
   const nft = {
     image,
     name: "NFT",

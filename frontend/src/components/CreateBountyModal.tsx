@@ -26,7 +26,7 @@ import { ethers } from "ethers";
 import { useDropzone } from "react-dropzone";
 import { Clickable } from "./css/Button";
 import { VerificationPeriods } from "../data/VerificationPeriod";
-import { EncodedURL } from "nft.storage/dist/src/lib/interface";
+import { CIDString } from "nft.storage/dist/src/lib/interface";
 import { uploadMetadata } from "../utils/IpfsUtils";
 
 interface Props {
@@ -47,7 +47,6 @@ export const CreateBountyModal: FC<Props> = ({ createModalOpen, setCreateModalOp
   const [deadline, setDeadline] = useState<Date | undefined>(addDays(new Date(), 7));
   const [criterias, setCriterias] = useState([""]);
   const [image, setImage] = useState<File>();
-  const [cid, setCid] = useState<EncodedURL>();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setImage(acceptedFiles[0]);
@@ -231,7 +230,7 @@ export const CreateBountyModal: FC<Props> = ({ createModalOpen, setCreateModalOp
       const data = await uploadMetadata(image, metadata);
       setCreateModalOpen(false);
 
-      setCid(data.url);
+      // send the cid to contract with (data.ipnft);
     } else {
       console.log("No image was found.");
     }
