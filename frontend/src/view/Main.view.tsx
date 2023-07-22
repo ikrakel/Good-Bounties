@@ -14,23 +14,23 @@ import placeholder from "../assets/placeholder.jpg";
 import { MockBounties } from "../data/MockData";
 import { DonateModal } from "../components/DonateModal";
 
-import { execute } from '../.graphclient';
+import { execute } from "../.graphclient";
 import { gql } from "@apollo/client";
 
 const GET_BOUNTIES = gql`
   query GetBounties {
     bounties(first: 10) {
-      tokenId,
-      createdBy,
-      deadline,
-      status,
-      title,
-      description,
-      criteria,
-      location,
-      uri,
-      imageUrl,
-      totalStakers,
+      tokenId
+      createdBy
+      deadline
+      status
+      title
+      description
+      criteria
+      location
+      uri
+      imageUrl
+      totalStakers
       totalStaked
     }
   }
@@ -44,27 +44,27 @@ export const MainView = () => {
   const [donateModalId, setDonateModalId] = useState<number>();
 
   const getAllBounties = async () => {
-    const result = await execute(GET_BOUNTIES, {})
+    const result = await execute(GET_BOUNTIES, {});
 
     if (result.data?.bounties && result.data.bounties.length > 0) {
       setAllBounties(result.data.bounties);
       console.log(result.data.bounties);
     }
-  }
+  };
 
   useEffect(() => {
     getAllBounties();
   }, []);
 
   const getDate = (bounty: any) => {
-    const date = new Date(Number(bounty.deadline) * 1000)
+    const date = new Date(Number(bounty.deadline) * 1000);
     return date;
-  }
+  };
 
   const getShortWallet = (bounty: any) => {
     const wallet = bounty.createdBy;
     return wallet.substring(0, 6) + "..." + wallet.substring(wallet.length - 4, wallet.length);
-  }
+  };
 
   return (
     <>
@@ -112,7 +112,7 @@ export const MainView = () => {
             upvotesCount={0}
             submitterName={getShortWallet(bounty)}
             submitterAvatar={"https://i.pravatar.cc/50?u=" + bounty.submitterName}
-            onClickDonate={() => setDonateModalId(bounty.id)}
+            onClickDonate={() => setDonateModalId(bounty.tokenId)}
           />
         ))}
       </Box>

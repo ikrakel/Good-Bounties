@@ -3,8 +3,8 @@ import { Text } from "../components/Text";
 import { useMemo, useState, useEffect } from "react";
 import { MockBounties } from "../data/MockData";
 import { Flex } from "../components/Common/Flex";
-import { Button, Chip, Divider, Grid, Tab, TabList, TabPanel, Tabs, useTheme } from "@mui/joy";
-import { StatusColors } from "../models/StatusEnum";
+import { Button, Chip, CircularProgress, Divider, Grid, Tab, TabList, TabPanel, Tabs, useTheme } from "@mui/joy";
+import { StatusColors, StatusEnum } from "../models/StatusEnum";
 import { differenceInDays } from "date-fns";
 import { LocationOn } from "@mui/icons-material";
 import { DonateModal } from "../components/DonateModal";
@@ -12,6 +12,8 @@ import { Bounty } from "../models/Bounty.Model";
 
 import { execute } from "../.graphclient";
 import { gql } from "@apollo/client";
+import { MATIC_PRICE } from "../data/Constants";
+import { ethers } from "ethers";
 
 const GET_BOUNTIES = gql`
   query GetBounty($tokenId: Int!) {
@@ -48,7 +50,7 @@ const stateToStatus = {
 };
 
 export const BountyDetailsView = () => {
-  const [bounty, setBounty] = useState({} as Bounty);
+  const [bounty, setBounty] = useState<Bounty>();
   const params = useParams();
   const theme = useTheme();
   const [donateModalId, setDonateModalId] = useState<number>();
@@ -84,7 +86,12 @@ export const BountyDetailsView = () => {
 
   const submit = () => {};
 
-  if (!bounty) return <></>;
+  if (!bounty)
+    return (
+      <Flex y xc yc height="calc(100vh)">
+        <CircularProgress />
+      </Flex>
+    );
   return (
     <>
       {donateModalId && <DonateModal id={donateModalId} close={() => setDonateModalId(undefined)} />}
@@ -100,13 +107,16 @@ export const BountyDetailsView = () => {
             <Grid xs={12}>
               {/* @ts-ignore */}
               <Text sx={{ color: StatusColors[bounty.status], fontSize: "1rem" }}>
-                ◉ {stateToStatus[bounty.status]}
+                ◉ {stateToStatus[bounty.status as keyof typeof stateToStatus]}
               </Text>
             </Grid>
             <Grid xs={6}>
               <Flex y>
                 <Text color="success" type="body" sx={{ fontSize: "1.5rem" }}>
-                  ${bounty.prize}
+                  $
+                  {(MATIC_PRICE * Number(ethers.utils.formatEther(bounty.prize))).toLocaleString("en-us", {
+                    maximumSignificantDigits: 4,
+                  })}
                 </Text>
                 <Text type="light">Reward</Text>
               </Flex>

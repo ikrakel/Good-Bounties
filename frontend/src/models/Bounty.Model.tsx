@@ -5,7 +5,7 @@ export interface Bounty {
   image: string;
   title: string;
   location: string;
-  status: StatusEnum;
+  status: number;
   upvotesCount: number;
   prize: number;
   submitterName: string;

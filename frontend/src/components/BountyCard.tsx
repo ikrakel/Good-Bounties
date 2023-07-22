@@ -8,13 +8,15 @@ import { differenceInDays, format } from "date-fns";
 import { Clickable } from "./css/Button";
 import { useNavigate } from "react-router-dom";
 import { Bounty } from "../models/Bounty.Model";
+import { ethers } from "ethers";
+import { MATIC_PRICE } from "../data/Constants";
 
 const stateToStatus = {
   0: "Open",
   1: "Submitted",
   2: "Expired",
   3: "Completed",
-}
+};
 
 interface Props extends Bounty {
   onClickDonate: () => void;
@@ -103,7 +105,13 @@ export const BountyCard: FC<Props> = ({
         </Flex>
         <Flex x xsb ye>
           <Flex y sx={{ justifySelf: "flex-end" }}>
-            <Text sx={{ mt: 3, fontWeight: "bold", fontSize: "0.8rem" }}>${prize.toLocaleString()} donated</Text>
+            <Text sx={{ mt: 3, fontWeight: "bold", fontSize: "0.8rem" }}>
+              $
+              {(MATIC_PRICE * Number(ethers.utils.formatEther(prize))).toLocaleString("en-us", {
+                maximumSignificantDigits: 4,
+              })}{" "}
+              donated
+            </Text>
 
             <Flex x xsb yc>
               <Text
