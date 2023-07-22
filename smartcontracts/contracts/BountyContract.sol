@@ -11,7 +11,11 @@ import {PGBountyState, IPGBountiesHandler} from "./interfaces/IPGBountiesHandler
 contract BountyContract is ERC721URIStorage {
     error BountyDoesntExist();
     error BountyIsNotOpened();
+    error BountyIsNotSubmitted();
+    error BountyIsNotVerified();
     error BountyHasExpired();
+    error VerificationPeriodExpired();
+    error OnlyOwnerCanValidateAttestation();
 
     struct Bounty {
         uint256 tokenId;
@@ -84,6 +88,25 @@ contract BountyContract is ERC721URIStorage {
         bounty.submittedTimestamp = block.timestamp;
 
         emit ProofSubmitted(_bountyId, msg.sender, _attestationHash);
+    }
+
+    function validateProof(uint256 _bountyId) external {
+      _checksBeforeValidation(_bountyId)
+    }
+
+    function denyProof(uint256 _bountyId) external {
+      _checksBeforeValidation(_bountyId)
+    }
+    
+    function _checksBeforeValidation(uint256 _bountyId) internal {
+        Bounty storage bounty = idToBounties[bountyId];
+        if (bounty.owner == address(0)) revert BountyDoesntExist();
+        if (bounty.owner != msg.msg.sender)
+            revert OnlyOwnerCanValidateAttestation();
+        if (bounty.state != PGBountyState.SUBMITTED)
+            revert BountyIsNotSubmitted();
+        if (block.timestamp > bounty.submittedTime + bounty.verificationPeriod)
+            revert VerificationPeriodExpired();
     }
 
     function createBounty(
