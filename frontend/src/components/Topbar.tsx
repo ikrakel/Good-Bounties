@@ -1,5 +1,5 @@
 import { Button, CircularProgress, Link, useTheme } from "@mui/joy";
-import { cloneElement, useMemo } from "react";
+import { cloneElement, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Text } from "./Text";
 import { Flex } from "./Common/Flex";
@@ -17,6 +17,8 @@ export const Topbar = () => {
 
   const { setCreateModalOpen } = useGlobalContext();
 
+  const [address, setAddress] = useState("");
+
   const Items = [
     {
       name: "Discover",
@@ -31,11 +33,18 @@ export const Topbar = () => {
   const { web3AuthModalPack, signIn, signer } = useWeb3Auth();
 
   const avatar = useMemo(() => {
-    if (!signer) return;
+    if (!address) return;
 
-    const icon = new Identicon(signer.address, 50);
+    const icon = new Identicon(address, 50);
     icon.background = [0, 0, 0, 0];
     return "data:image/png;base64," + icon.toString();
+  }, [address]);
+
+  useEffect(() => {
+    if (!signer) return;
+    (async () => {
+      setAddress(await signer.getAddress());
+    })();
   }, [signer]);
 
   return (
@@ -88,12 +97,12 @@ export const Topbar = () => {
             minWidth: "120px",
           }}
         >
-          {!signer?.address ? (
+          {!address ? (
             <CircularProgress sx={{ width: "100%" }} />
           ) : (
             <>
               <img src={avatar} height="40px" alt="avatar" />
-              <Text sx={{ color: "white" }}>{`${signer?.address.slice(0, 6)}...${signer?.address.slice(-4)}`}</Text>
+              <Text sx={{ color: "white" }}>{`${address.slice(0, 6)}...${address.slice(-4)}`}</Text>
             </>
           )}
         </Flex>

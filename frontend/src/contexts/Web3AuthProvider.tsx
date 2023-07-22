@@ -5,7 +5,7 @@ import { ADAPTER_EVENTS, ADAPTER_STATUS, CHAIN_NAMESPACES, WALLET_ADAPTERS } fro
 import { Web3AuthOptions } from "@web3auth/modal";
 import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
 import { Web3AuthConnector } from "@web3auth/web3auth-wagmi-connector";
-import { AbstractProvider, ethers, formatEther } from "ethers";
+import { ethers } from "ethers";
 import { FC, ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { polygon } from "wagmi/dist/chains";
 
@@ -59,8 +59,8 @@ const web3AuthConfig: Web3AuthConfig = {
 
 interface Web3AuthContextType {
   web3AuthModalPack?: Web3AuthModalPack;
-  provider?: ethers.BrowserProvider;
-  signer?: ethers.JsonRpcSigner;
+  provider?: ethers.providers.Web3Provider;
+  signer?: ethers.Signer;
   status: "connected" | "disconnected";
   signIn: () => Promise<void>;
   walletBalance: string;
@@ -79,8 +79,8 @@ export const Web3AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   //Just used as a way to re-render the component
   const [status, setStatus] = useState<"connected" | "disconnected">("disconnected");
 
-  const [signer, setSigner] = useState<ethers.JsonRpcSigner>();
-  const [provider, setProvider] = useState<ethers.BrowserProvider>();
+  const [signer, setSigner] = useState<ethers.Signer>();
+  const [provider, setProvider] = useState<ethers.providers.Web3Provider>();
   const [walletBalance, setWalletBalance] = useState("0");
 
   const { data: web3AuthModalPack } = useQuery(["getWeb3AuthModalPack"], async () => {
@@ -97,15 +97,12 @@ export const Web3AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
   const updateSigner = useCallback(async () => {
     const web3AuthProvider = web3AuthModalPack?.getProvider();
-    const provider = web3AuthProvider
-      ? //@ts-expect-error
-        new ethers.BrowserProvider(web3AuthProvider)
-      : undefined;
+    const provider = web3AuthProvider ? new ethers.providers.Web3Provider(web3AuthProvider) : undefined;
     const signer = provider ? await provider.getSigner() : undefined;
-    const balance = signer ? await provider?.getBalance(signer.address) : undefined;
+    const balance = signer ? await provider?.getBalance(await signer.getAddress()) : undefined;
     setProvider(provider);
     setSigner(signer);
-    setWalletBalance(balance ? formatEther(balance) : "");
+    setWalletBalance(balance ? ethers.utils.formatEther(balance) : "");
   }, [web3AuthModalPack]);
 
   const walletStatusUpdated = useCallback(async () => {
