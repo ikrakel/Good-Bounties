@@ -1,16 +1,17 @@
-specVersion: 0.0.4
+specVersion: 0.0.5
 schema:
   file: ./schema.graphql
 dataSources:
-  - kind: ethereum/contract
+  - kind: ethereum
     name: BountyStakeContract
     network: celo-alfajores
     source:
       address: "0x822A6c6419Ceb6B1577cbbAF6D8Ba7fAF6Acfd01"
       abi: BountyStakeContract
+      startBlock: 18925860
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
         - StakeMade
@@ -23,4 +24,4 @@ dataSources:
           handler: handleStakeMade
         - event: StakeWithdrawn(indexed uint256,indexed address,uint256)
           handler: handleStakeWithdrawn
-      file: ./src/mapping.ts
+      file: ./src/handler.ts
