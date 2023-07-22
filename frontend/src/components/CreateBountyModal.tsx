@@ -26,6 +26,7 @@ import { ethers } from "ethers";
 import { useDropzone } from "react-dropzone";
 import { Clickable } from "./css/Button";
 import { VerificationPeriods } from "../data/VerificationPeriod";
+import { NFTStorage } from "nft.storage";
 
 interface Props {
   createModalOpen: boolean;
@@ -45,6 +46,7 @@ export const CreateBountyModal: FC<Props> = ({ createModalOpen, setCreateModalOp
   const [deadline, setDeadline] = useState<Date | undefined>(addDays(new Date(), 7));
   const [criterias, setCriterias] = useState([""]);
   const [image, setImage] = useState<File>();
+  const [cid, setCid] = useState("");
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setImage(acceptedFiles[0]);
@@ -215,14 +217,33 @@ export const CreateBountyModal: FC<Props> = ({ createModalOpen, setCreateModalOp
   };
   const steps = [() => step1(), () => step2(), () => step3()];
 
-  const submit = () => {
-    // UploadMetadata(image!, {
-    //   title,
-    //   description,
-    //   location,
-    //   deadline: format(deadline!, "yyyy-MM-dd"),
-    //   criteria: criterias.join("\n"),
-    // });
+  const submit = async () => {
+    if (image) {
+      const nft = {
+        image,
+        name: "NFT",
+        description: "NFT description",
+        properties: {
+          title,
+          description,
+          location,
+          deadline: format(deadline!, "yyyy-MM-dd"),
+          criteria: criterias.join("\n"),
+        },
+      };
+
+      const client = new NFTStorage({
+        token:
+          process.env.NFT_STORAGE_TOKEN ||
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDc4ZTY0MmNEQ0VjNjM2M0UxMGQ3ZDEyMEM3QTVCZTlFM2MyMTMwNzIiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY5MDA1MzEwMDg1OSwibmFtZSI6ImV0aGdsb2JhbF9wYXJpcyJ9.TkMEx4WyypGr6rXffjCvUJZYFlnWc1k0qvdfkokdk3g",
+      });
+      const metadata = await client.store(nft);
+      setCid(metadata.url);
+
+      setCreateModalOpen(false);
+    } else {
+      console.log("No image was found.");
+    }
   };
 
   const back = () => {
