@@ -3,7 +3,6 @@
 pragma solidity ^0.8.3;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import { IBountyRewardPool } from "./BountyRewardPool.sol";
 
 /*
 * The BountyStakeContract is designed to facilitate staking on NFT Bounties. Each NFT
@@ -31,15 +30,13 @@ interface IBountyStakeContract {
 
 contract BountyStakeContract is IBountyStakeContract {
   address public bountyNFT;
-  address public bountyRewardPool;
 
   // We're mapping a tokenId to another mapping that links an address to its stake
   mapping(uint => mapping(address => uint)) public stakes;
   mapping(uint => uint) public totalStakesPerTokenId;
 
-  constructor(address _bountyNFT, address _bountyRewardPool) {
+  constructor(address _bountyNFT) {
     bountyNFT = _bountyNFT;
-    bountyRewardPool = _bountyRewardPool;
   }
 
   function getStake(uint _tokenId, address _address) external view  override(IBountyStakeContract) returns (uint) {
@@ -83,9 +80,6 @@ contract BountyStakeContract is IBountyStakeContract {
     totalStakesPerTokenId[_tokenId] -= stakeAmount;
 
     // Transfer the stake back to the user
-    // TODO: Add a lookup to the amount that we should split between the user and the pool
-    uint amountToWithdraw = stakeAmount / 2;
-    IBountyRewardPool(bountyRewardPool).contribute{value: amountToWithdraw}();
-    payable(_claimer).transfer(amountToWithdraw);
+    payable(_claimer).transfer(stakeAmount);
   }
 }
