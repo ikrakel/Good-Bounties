@@ -107,7 +107,7 @@ contract BountyContract is ERC721URIStorage {
         _checksBeforeValidation(_bountyId);
 
         Bounty storage bounty = idToBounties[_bountyId];
-        if (block.timestamp > bounty.submissionDeadline) {
+        if (block.timestamp >= bounty.submissionDeadline) {
             bounty.state = PGBountyState.EXPIRED;
         } else {
             bounty.state = PGBountyState.OPEN;
