@@ -19,7 +19,7 @@ contract BountyContract is ERC721URIStorage {
         uint256 verificationPeriod;
         uint256 submittedTimestamp;
         address payable owner;
-        address payable contributor;
+        address contributor;
         string attestationHash;
         PGBountyState state;
     }
@@ -54,7 +54,6 @@ contract BountyContract is ERC721URIStorage {
         uint256 verificationPeriod,
         string memory uri
     ) external payable returns (uint256) {
-        require(reward > 0, "The reward must be bigger than 0.");
         //TODO: validate time fields
 
         tokenIds.increment();
@@ -73,18 +72,18 @@ contract BountyContract is ERC721URIStorage {
         uint256 _bountyId,
         string calldata _attestationHash
     ) external {
-        Bounty storage bounty = idToBounties[bountyId];
+        Bounty storage bounty = idToBounties[_bountyId];
         if (bounty.owner == address(0)) revert BountyDoesntExist();
-        if (!bounty.state != PGBountyState.OPEN) revert BountyIsNotOpened();
+        if (bounty.state != PGBountyState.OPEN) revert BountyIsNotOpened();
         if (block.timestamp > bounty.submissionDeadline)
             revert BountyHasExpired();
 
         bounty.attestationHash = _attestationHash;
         bounty.state = PGBountyState.SUBMITTED;
         bounty.contributor = msg.sender;
-        bounty.submittedTime = block.timestamp;
+        bounty.submittedTimestamp = block.timestamp;
 
-        emit ProofSubmitted(bountyId, msg.sender, attestationHash);
+        emit ProofSubmitted(_bountyId, msg.sender, _attestationHash);
     }
 
     function createBounty(
