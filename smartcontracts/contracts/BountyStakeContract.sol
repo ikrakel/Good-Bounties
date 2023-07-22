@@ -1,92 +1,113 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.3;
+pragma solidity ^0.8.19;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 /*
-* The BountyStakeContract is designed to facilitate staking on NFT Bounties. Each NFT
-* represents a unique bounty created by users. Multiple users can stake Ether on these
-* bounties. Stakes are tied to both the bounty (identified by its token ID) and the address
-* of the user who stakes.
-*
-* Users can stake multiple times on the same bounty, and their total stake is tracked.
-* When the bounty is completed, users can withdraw their stakes.
-*
-* Note: Interactions with the BountyNFT contract (e.g., checking bounty ownership and status)
-* are stubbed out and should be completed according to the specific ERC721 contract implementation.
-*/
+ * The BountyStakeContract is designed to facilitate staking on NFT Bounties. Each NFT
+ * represents a unique bounty created by users. Multiple users can stake Ether on these
+ * bounties. Stakes are tied to both the bounty (identified by its token ID) and the address
+ * of the user who stakes.
+ *
+ * Users can stake multiple times on the same bounty, and their total stake is tracked.
+ * When the bounty is completed, users can withdraw their stakes.
+ *
+ * Note: Interactions with the BountyNFT contract (e.g., checking bounty ownership and status)
+ * are stubbed out and should be completed according to the specific ERC721 contract implementation.
+ */
 
 interface IBountyStakeContract {
-  // returns the staked amount in a given bounty by a given address
-  function getStake(uint256 _tokenId, address _address) external view returns (uint256);
+    // returns the staked amount in a given bounty by a given address
+    function getStake(
+        uint256 _tokenId,
+        address _address
+    ) external view returns (uint256);
 
-  // stakes a given amount in a given bounty (tokenId)
-  function stake(uint256 _tokenId) external payable;
+    // stakes a given amount in a given bounty (tokenId)
+    function stake(uint256 _tokenId) external payable;
 
-  // withdraws the stake from a given bounty (tokenId)
-  function withdraw(uint256 _tokenId) external;
+    // withdraws the stake from a given bounty (tokenId)
+    function withdraw(uint256 _tokenId) external;
 }
 
 contract BountyStakeContract is IBountyStakeContract {
-  address public bountyNFT;
+    address public bountyNFT;
 
-  // Event declarations
-  event StakeMade(uint256 indexed tokenId, address indexed staker, uint256 amount);
-  event StakeWithdrawn(uint256 indexed tokenId, address indexed staker, uint256 amount);
+    // Event declarations
+    event StakeMade(
+        uint256 indexed tokenId,
+        address indexed staker,
+        uint256 amount
+    );
+    event StakeWithdrawn(
+        uint256 indexed tokenId,
+        address indexed staker,
+        uint256 amount
+    );
 
-  // We're mapping a tokenId to another mapping that links an address to its stake
-  mapping(uint256 => mapping(address => uint256)) public stakes;
-  mapping(uint256 => uint256) public totalStakesPerTokenId;
+    // We're mapping a tokenId to another mapping that links an address to its stake
+    mapping(uint256 => mapping(address => uint256)) public stakes;
+    mapping(uint256 => uint256) public totalStakesPerTokenId;
 
-  constructor(address _bountyNFT) {
-    bountyNFT = _bountyNFT;
-  }
+    constructor(address _bountyNFT) {
+        bountyNFT = _bountyNFT;
+    }
 
-  function getStake(uint256 _tokenId, address _address) external view  override(IBountyStakeContract) returns (uint256) {
-    return stakes[_tokenId][_address];
-  }
+    function getStake(
+        uint256 _tokenId,
+        address _address
+    ) external view override(IBountyStakeContract) returns (uint256) {
+        return stakes[_tokenId][_address];
+    }
 
-  function stake(uint256 _tokenId) external payable override(IBountyStakeContract) {
-    // TODO: Add the require below once we have a collection ready
-    // require(ERC721(bountyNFT).ownerOf(_tokenId) != address(0), "Bounty does not exist");
-    require(msg.value > 0, "Stake must be greater than 0");
+    function stake(
+        uint256 _tokenId
+    ) external payable override(IBountyStakeContract) {
+        // TODO: Add the require below once we have a collection ready
+        // require(ERC721(bountyNFT).ownerOf(_tokenId) != address(0), "Bounty does not exist");
+        require(msg.value > 0, "Stake must be greater than 0");
 
-    // Add the new stake to the mapping
-    stakes[_tokenId][msg.sender] += msg.value;
-    totalStakesPerTokenId[_tokenId] += msg.value;
+        // Add the new stake to the mapping
+        stakes[_tokenId][msg.sender] += msg.value;
+        totalStakesPerTokenId[_tokenId] += msg.value;
 
-    emit StakeMade(_tokenId, msg.sender, msg.value);
-  }
+        emit StakeMade(_tokenId, msg.sender, msg.value);
+    }
 
-  function withdraw(uint256 _tokenId) external override(IBountyStakeContract) {
-    // TODO: Add the require below once we have a collection ready
-    // require(ERC721(bountyNFT).statusOf(_tokenId) == "complete", "Bounty's state does not allow withdrawls");
+    function withdraw(
+        uint256 _tokenId
+    ) external override(IBountyStakeContract) {
+        // TODO: Add the require below once we have a collection ready
+        // require(ERC721(bountyNFT).statusOf(_tokenId) == "complete", "Bounty's state does not allow withdrawls");
 
-    // TODO: Depending on the state of bounty it should be withdrawn for the staker or for the contributor
-    // _withdrawForContributors(_tokenId, msg.sender);
-    _withdrawForStakers(_tokenId, msg.sender);
-  }
+        // TODO: Depending on the state of bounty it should be withdrawn for the staker or for the contributor
+        // _withdrawForContributors(_tokenId, msg.sender);
+        _withdrawForStakers(_tokenId, msg.sender);
+    }
 
-  function _withdrawForContributors(uint256 _tokenId, address _claimer) internal {
-    // TODO: Add a lookup if the user has contributed to the bounty
+    function _withdrawForContributors(
+        uint256 _tokenId,
+        address _claimer
+    ) internal {
+        // TODO: Add a lookup if the user has contributed to the bounty
 
-    uint256 availableForBounty = totalStakesPerTokenId[_tokenId];
-    totalStakesPerTokenId[_tokenId] = 0;
+        uint256 availableForBounty = totalStakesPerTokenId[_tokenId];
+        totalStakesPerTokenId[_tokenId] = 0;
 
-    payable(_claimer).transfer(availableForBounty);
-  }
+        payable(_claimer).transfer(availableForBounty);
+    }
 
-  function _withdrawForStakers(uint256 _tokenId, address _claimer) internal {
-    uint256 stakeAmount = stakes[_tokenId][msg.sender];
-    require(stakeAmount > 0, "No funds to withdraw");
+    function _withdrawForStakers(uint256 _tokenId, address _claimer) internal {
+        uint256 stakeAmount = stakes[_tokenId][msg.sender];
+        require(stakeAmount > 0, "No funds to withdraw");
 
-    // Reset the stake to 0
-    stakes[_tokenId][_claimer] = 0;
-    totalStakesPerTokenId[_tokenId] -= stakeAmount;
+        // Reset the stake to 0
+        stakes[_tokenId][_claimer] = 0;
+        totalStakesPerTokenId[_tokenId] -= stakeAmount;
 
-    // Transfer the stake back to the user
-    emit StakeWithdrawn(_tokenId, msg.sender, stakeAmount);
-    payable(_claimer).transfer(stakeAmount);
-  }
+        // Transfer the stake back to the user
+        emit StakeWithdrawn(_tokenId, msg.sender, stakeAmount);
+        payable(_claimer).transfer(stakeAmount);
+    }
 }

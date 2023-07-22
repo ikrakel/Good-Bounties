@@ -19,7 +19,7 @@ interface IPGBountiesHandler {
         string calldata _attestationHash
     ) external; // anyone (contributor)
 
-    function validateProof(uint256 _bountyId) external; // onlyBountyOwner
+    function validateProof(uint256 _bountyId, bool valid) external; // onlyBountyOwner
 
     function denyProof(uint256 _bountyId) external; // onlyBountyOwner
 
