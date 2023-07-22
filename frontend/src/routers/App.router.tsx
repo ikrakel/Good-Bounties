@@ -8,12 +8,13 @@ export const AppRouter = () => {
   const routes = useRoutes([
     {
       path: "*",
-      element: <NotFoundView />,
+      element: <Navigate to={"/main"} />,
     },
     {
       path: "/",
       element: <MainLayout />,
       children: [
+        { path: "/", element: <Navigate to={"/main"} /> },
         { path: "main", element: <MainView /> },
         { path: "bounty/:id", element: <BountyDetailsView /> },
       ],
