@@ -1,4 +1,5 @@
 import { useLocation, useParams } from "react-router-dom";
+import { ethers } from "ethers";
 import { Text } from "../components/Text";
 import { useMemo, useState, useEffect } from "react";
 import { MockBounties } from "../data/MockData";
@@ -13,7 +14,6 @@ import { Bounty } from "../models/Bounty.Model";
 import { execute } from "../.graphclient";
 import { gql } from "@apollo/client";
 import { MATIC_PRICE } from "../data/Constants";
-import { ethers } from "ethers";
 
 const GET_BOUNTIES = gql`
   query GetBounty($tokenId: Int!) {
@@ -94,7 +94,7 @@ export const BountyDetailsView = () => {
     );
   return (
     <>
-      {donateModalId && <DonateModal id={donateModalId} close={() => setDonateModalId(undefined)} />}
+      {donateModalId && <DonateModal bounty={bounty} close={() => setDonateModalId(undefined)} />}
       <Flex y gap3>
         <Text sx={{ textAlign: "center" }} type="header">
           {bounty.title}

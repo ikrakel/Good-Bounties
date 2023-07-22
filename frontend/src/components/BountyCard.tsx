@@ -37,6 +37,7 @@ export const BountyCard: FC<Props> = ({
 }) => {
   const theme = useTheme();
   const navigate = useNavigate();
+
   return (
     <Card
       onClick={() => navigate(`/bounty/${id}`)}
