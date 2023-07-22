@@ -19,35 +19,35 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 interface IBountyStakeContract {
   // returns the staked amount in a given bounty by a given address
-  function getStake(uint _tokenId, address _address) external view returns (uint);
+  function getStake(uint256 _tokenId, address _address) external view returns (uint256);
 
   // stakes a given amount in a given bounty (tokenId)
-  function stake(uint _tokenId) external payable;
+  function stake(uint256 _tokenId) external payable;
 
   // withdraws the stake from a given bounty (tokenId)
-  function withdraw(uint _tokenId) external;
+  function withdraw(uint256 _tokenId) external;
 }
 
 contract BountyStakeContract is IBountyStakeContract {
   address public bountyNFT;
 
   // Event declarations
-  event StakeMade(uint indexed tokenId, address indexed staker, uint amount);
-  event StakeWithdrawn(uint indexed tokenId, address indexed staker, uint amount);
+  event StakeMade(uint256 indexed tokenId, address indexed staker, uint256 amount);
+  event StakeWithdrawn(uint256 indexed tokenId, address indexed staker, uint256 amount);
 
   // We're mapping a tokenId to another mapping that links an address to its stake
-  mapping(uint => mapping(address => uint)) public stakes;
-  mapping(uint => uint) public totalStakesPerTokenId;
+  mapping(uint256 => mapping(address => uint256)) public stakes;
+  mapping(uint256 => uint256) public totalStakesPerTokenId;
 
   constructor(address _bountyNFT) {
     bountyNFT = _bountyNFT;
   }
 
-  function getStake(uint _tokenId, address _address) external view  override(IBountyStakeContract) returns (uint) {
+  function getStake(uint256 _tokenId, address _address) external view  override(IBountyStakeContract) returns (uint256) {
     return stakes[_tokenId][_address];
   }
 
-  function stake(uint _tokenId) external payable override(IBountyStakeContract) {
+  function stake(uint256 _tokenId) external payable override(IBountyStakeContract) {
     // TODO: Add the require below once we have a collection ready
     // require(ERC721(bountyNFT).ownerOf(_tokenId) != address(0), "Bounty does not exist");
     require(msg.value > 0, "Stake must be greater than 0");
@@ -59,28 +59,26 @@ contract BountyStakeContract is IBountyStakeContract {
     emit StakeMade(_tokenId, msg.sender, msg.value);
   }
 
-  function withdraw(uint _tokenId) external override(IBountyStakeContract) {
+  function withdraw(uint256 _tokenId) external override(IBountyStakeContract) {
     // TODO: Add the require below once we have a collection ready
     // require(ERC721(bountyNFT).statusOf(_tokenId) == "complete", "Bounty's state does not allow withdrawls");
 
     // TODO: Depending on the state of bounty it should be withdrawn for the staker or for the contributor
     // _withdrawForContributors(_tokenId, msg.sender);
     _withdrawForStakers(_tokenId, msg.sender);
-
-    emit StakeWithdrawn(_tokenId, msg.sender, stakeAmount);
   }
 
-  function _withdrawForContributors(uint _tokenId, address _claimer) internal {
+  function _withdrawForContributors(uint256 _tokenId, address _claimer) internal {
     // TODO: Add a lookup if the user has contributed to the bounty
 
-    uint availableForBounty = totalStakesPerTokenId[_tokenId];
+    uint256 availableForBounty = totalStakesPerTokenId[_tokenId];
     totalStakesPerTokenId[_tokenId] = 0;
 
     payable(_claimer).transfer(availableForBounty);
   }
 
-  function _withdrawForStakers(uint _tokenId, address _claimer) internal {
-    uint stakeAmount = stakes[_tokenId][msg.sender];
+  function _withdrawForStakers(uint256 _tokenId, address _claimer) internal {
+    uint256 stakeAmount = stakes[_tokenId][msg.sender];
     require(stakeAmount > 0, "No funds to withdraw");
 
     // Reset the stake to 0
@@ -88,6 +86,7 @@ contract BountyStakeContract is IBountyStakeContract {
     totalStakesPerTokenId[_tokenId] -= stakeAmount;
 
     // Transfer the stake back to the user
+    emit StakeWithdrawn(_tokenId, msg.sender, stakeAmount);
     payable(_claimer).transfer(stakeAmount);
   }
 }
