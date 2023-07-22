@@ -1,0 +1,8 @@
+{
+  "celo-alfajores": {
+    "BountyStakeContract": {
+      "address": "0x822A6c6419Ceb6B1577cbbAF6D8Ba7fAF6Acfd01",
+      "startBlock": 18925860
+    }
+  }
+}

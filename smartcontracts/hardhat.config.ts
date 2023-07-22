@@ -10,7 +10,9 @@ import "hardhat-gas-reporter";
 import type { HardhatUserConfig } from "hardhat/config";
 
 const deployer = {
-  mnemonic: process.env.MNEMONIC || "test test test test test test test test test test test junk",
+  mnemonic:
+    process.env.MNEMONIC ||
+    "test test test test test test test test test test test junk",
 };
 
 // const deployer = [""];
@@ -25,7 +27,7 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: "0.8.17",
+    version: "0.8.19",
     settings: {
       optimizer: {
         enabled: true,
