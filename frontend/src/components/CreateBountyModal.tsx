@@ -27,6 +27,7 @@ import { useDropzone } from "react-dropzone";
 import { Clickable } from "./css/Button";
 import { VerificationPeriods } from "../data/VerificationPeriod";
 import { NFTStorage } from "nft.storage";
+import { EncodedURL } from "nft.storage/dist/src/lib/interface";
 
 interface Props {
   createModalOpen: boolean;
@@ -40,13 +41,13 @@ export const CreateBountyModal: FC<Props> = ({ createModalOpen, setCreateModalOp
   const [currentStep, setCurrentStep] = useState(0);
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
-  const [verificationPeriod, setVerificationPeriod] = useState("0");
+  const [verificationPeriod, setVerificationPeriod] = useState(VerificationPeriods[0].name);
   const [rewardAmount, setRewardAmount] = useState(0);
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState<Date | undefined>(addDays(new Date(), 7));
   const [criterias, setCriterias] = useState([""]);
   const [image, setImage] = useState<File>();
-  const [cid, setCid] = useState("");
+  const [cid, setCid] = useState<EncodedURL>();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setImage(acceptedFiles[0]);
@@ -237,10 +238,11 @@ export const CreateBountyModal: FC<Props> = ({ createModalOpen, setCreateModalOp
           process.env.NFT_STORAGE_TOKEN ||
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDc4ZTY0MmNEQ0VjNjM2M0UxMGQ3ZDEyMEM3QTVCZTlFM2MyMTMwNzIiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY5MDA1MzEwMDg1OSwibmFtZSI6ImV0aGdsb2JhbF9wYXJpcyJ9.TkMEx4WyypGr6rXffjCvUJZYFlnWc1k0qvdfkokdk3g",
       });
-      const metadata = await client.store(nft);
-      setCid(metadata.url);
 
       setCreateModalOpen(false);
+      const metadata = await client.store(nft);
+
+      setCid(metadata.url);
     } else {
       console.log("No image was found.");
     }
