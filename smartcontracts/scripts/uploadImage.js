@@ -3,26 +3,26 @@
 import fs from 'fs'
 import { NFTStorage, File } from 'nft.storage'
 
-const TOKEN = process.env.TOKEN;
+const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDZGOTMwMEMxNWRmMTIxMEMyRTA4YTVEZWY5OTkwRDM4ZTE1MTNmN0IiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY5MDA0NDE0MzM0OCwibmFtZSI6ImV0aGdsb2JhbC1wYXJpcyJ9.4L8ee7qYAQORI0YQVIpifRjCkxeFgCpeSKCNfwj_kBs";
 
 const ALL_DATA = [
   {
-    "image": "./images/ethglobal-01.jpg",
-    "title": "Beach Clean-up",
+    "image": "./images/ethglobal-01.png",
+    "title": "Praia do Forte cleanup challenge",
     "location": "Brazil",
-    "description": "Protect marine life and keep our beaches clean by collecting and disposing of litter during your visits.",
+    "description": "Answer Praia do Forte's call for help by joining the cleanup challenge. The beach is our playground, and it's time we take responsibility for its upkeep. This challenge involves you, the beachgoer, to collect at least two 50-liter bags of trash during your visits. By doing so, we're not only cleaning up but also actively contributing to the protection of the diverse marine life that thrives here.",
     "criteria": "Collect at least two 50 liter bags with trash from the beach. Attach a before and after photo.",
   },
   {
     "image": "./images/ethglobal-02.jpg",
-    "title": "Donate Books to a Local Library",
+    "title": "Donate 10 books to Ludlow's library",
     "location": "United Kingdom",
     "description": "Libraries are the cornerstone of any thriving community, and your gently-used books could make all the difference to someone seeking knowledge.",
     "criteria": "Donate a minimum of 10 books in good condition.",
   },
   {
     "image": "./images/ethglobal-03.jpg",
-    "title": "Donate Blood, Save Lives",
+    "title": "Donate blood for the fist time",
     "location": "Germany",
     "description": "Join our blood donation drive to help maintain local blood supply levels.",
     "criteria": "Donate blood at least once. Attach a photograph or documentation of the donation as proof.",
@@ -36,7 +36,7 @@ const ALL_DATA = [
   },
   {
     "image": "./images/ethglobal-05.jpg",
-    "title": "Adopt a Pet, Change a Life",
+    "title": "Adopt a pet from the Wellington shelter",
     "location": "New Zealand",
     "description": "Adopt a pet from a local shelter to provide them with a loving home.",
     "criteria": "Adopt a pet from a local shelter. Attach the adoption papers or photographs as proof.",
@@ -57,7 +57,7 @@ const ALL_DATA = [
   },
   {
     "image": "./images/ethglobal-08.jpg",
-    "title": "Community Art: Paint a Mural",
+    "title": "Paint a mural in Barrio 31",
     "location": "Argentina",
     "description": "Beautify our community by creating a public mural that brings joy and inspiration to all who pass by.",
     "criteria": "Paint a public mural with a size of at least 10x10 feet. Attach photographs of the mural, both in progress and complete, as proof.",

@@ -1,4 +1,5 @@
 import { NFTStorage } from "nft.storage";
+import { OffchainAttestationParams } from "@ethereum-attestation-service/eas-sdk";
 
 interface BountyMetadata {
   title: string;
@@ -8,11 +9,7 @@ interface BountyMetadata {
   deadline: string;
 }
 
-interface ProofMetadata {
-  description: string;
-}
-
-export const uploadMetadata = async (image: File, metadata: BountyMetadata | ProofMetadata) => {
+export const uploadMetadata = async (image: File, metadata: BountyMetadata | OffchainAttestationParams) => {
   const nft = {
     image,
     name: "NFT",

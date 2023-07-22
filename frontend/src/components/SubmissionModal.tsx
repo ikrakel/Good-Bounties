@@ -8,11 +8,16 @@ import { Clickable } from "./css/Button";
 import { Bounty } from "../models/Bounty.Model";
 import { uploadMetadata } from "../utils/IpfsUtils";
 import { CIDString } from "nft.storage/dist/src/lib/interface";
+import { BigNumber, ethers } from "ethers";
+import { createContributorAttestation } from "../lib/eas/eas-offchain-attester";
+import PGBountiesManagerContract from "./abi/PGBountiesManager.json";
 
 interface Props {
   close: () => void;
   bounty: Bounty;
 }
+
+const PG_BOUNTIES_ADDRESS = "0x297CDC6d71a2e2321F76dadCDa939A1ffB22c2EC";
 
 export const SubmissionModal: FC<Props> = ({ bounty, close }) => {
   const theme = useTheme();
@@ -21,19 +26,28 @@ export const SubmissionModal: FC<Props> = ({ bounty, close }) => {
   const [waitingForTransaction, setWaitingForTransaction] = useState(false);
   const [image, setImage] = useState<File>();
   const [description, setDescription] = useState("");
+  const [attestationHash, setAttestationHash] = useState<string>("");
 
   const submit = async () => {
     setWaitingForTransaction(true);
 
     if (image) {
-      const data = await uploadMetadata(image, {
-        description,
-      });
+      const imageCid = "";
+      const attestation = await createContributorAttestation(signer!, bounty.createdBy, imageCid, description);
+
+      const data = await uploadMetadata(image, attestation);
+      setAttestationHash(data.ipnft);
 
       // call the contract with data.ipnft
+      const contract = new ethers.Contract(PG_BOUNTIES_ADDRESS, PGBountiesManagerContract, signer);
+
+      const tx = await contract.connect(signer!).submitProof(BigNumber.from(bounty.tokenId), attestationHash);
+      await tx.wait();
     } else {
       console.log("Please upload image");
     }
+
+    close();
     setWaitingForTransaction(false);
   };
 

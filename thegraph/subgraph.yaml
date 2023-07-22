@@ -8,7 +8,7 @@ dataSources:
     name: BountyStakeContract
     network: mumbai
     source:
-      address: "0xD47C4d8C55BB0B48694662752dD420329Be12b65"
+      address: "0x914F89B08965198EAba0aee44865E2A613847b09"
       abi: BountyStakeContract
       startBlock: 38201500
     mapping:
@@ -31,7 +31,7 @@ dataSources:
     name: PGBountiesManager
     network: mumbai
     source:
-      address: "0x87aD9FbE6c054fe330c996d101716De439eaaB9c"
+      address: "0x297CDC6d71a2e2321F76dadCDa939A1ffB22c2EC"
       abi: PGBountiesManager
       startBlock: 38201500
     mapping:
@@ -47,4 +47,14 @@ dataSources:
       eventHandlers:
         - event: BountyCreated(indexed uint256,indexed address,uint8,uint256,uint256)
           handler: handleBountyCreated
+        - event: ProofSubmitted(indexed uint256,indexed address,uint8,string)
+          handler: handleProofSubmitted
+        - event: ProofValidated(indexed uint256,indexed address,uint8)
+          handler: handleProofValidated
+        - event: ProofDenied(indexed uint256,indexed address,uint8)
+          handler: handleProofDenied
+        - event: BountyClaimed(indexed uint256,indexed address,uint8)
+          handler: handleBountyClaimed
+        - event: BountyExpired(indexed uint256,indexed address,uint8)
+          handler: handleBountyExpired
       file: ./src/handler.ts
