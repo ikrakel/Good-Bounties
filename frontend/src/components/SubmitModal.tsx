@@ -6,14 +6,18 @@ import { Text } from "./Text";
 import { useWeb3Auth } from "../contexts/Web3AuthProvider";
 import PGBountiesManagerContract from "./abi/PGBountiesManager.json";
 import { Bounty } from "../models/Bounty.Model";
-import storeContributorAttestation from "../lib/eas/eas-offchain-attester";
+import { createContributorAttestation } from "../lib/eas/eas-offchain-attester";
 
 //UNUSED FOR NOW
-const submit = (signer: ethers.providers.JsonRpcSigner) => {
+const createAndSign = (
+  signer: ethers.providers.JsonRpcSigner,
+  bounty: Bounty,
+  imageCid: string,
+  description: string
+) => {
   console.log("submitting");
   console.log("signer in submit", signer);
   if (signer) {
-    storeContributorAttestation(signer, "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "ipfsHash");
   }
 };
 
@@ -32,9 +36,11 @@ export const SubmitModal: FC<Props> = ({ bounty, close }) => {
   );
   const [waitingForTransaction, setWaitingForTransaction] = useState(false);
 
-  const submit = async () => {
+  const submit = async (imageCid: string, description: string) => {
     if (!signer) return;
     setWaitingForTransaction(true);
+
+    const attestation = createContributorAttestation(signer, "0x0" /*bounty.createdBy*/, imageCid, description);
 
     const contract = new ethers.Contract(PG_BOUNTIES_ADDRESS, PGBountiesManagerContract, signer);
 
@@ -58,7 +64,7 @@ export const SubmitModal: FC<Props> = ({ bounty, close }) => {
             </Button>
             <Button
               loading={waitingForTransaction}
-              onClick={() => submit()}
+              onClick={() => submit("", "")}
               disabled={!signer}
               variant="soft"
               color="success"
