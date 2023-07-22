@@ -25,6 +25,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ethers } from "ethers";
 import { useDropzone } from "react-dropzone";
 import { Clickable } from "./css/Button";
+import { VerificationPeriods } from "../data/VerificationPeriod";
 
 interface Props {
   createModalOpen: boolean;
@@ -38,6 +39,7 @@ export const CreateBountyModal: FC<Props> = ({ createModalOpen, setCreateModalOp
   const [currentStep, setCurrentStep] = useState(0);
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
+  const [verificationPeriod, setVerificationPeriod] = useState("0");
   const [rewardAmount, setRewardAmount] = useState(0);
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState<Date | undefined>(addDays(new Date(), 7));
@@ -168,6 +170,20 @@ export const CreateBountyModal: FC<Props> = ({ createModalOpen, setCreateModalOp
           >
             Add critera
           </Button>
+        </Flex>
+        <Flex y gap1>
+          <Text>Verification Period</Text>
+          <Flex x yc>
+            <Autocomplete
+              sx={{ width: "100%" }}
+              variant="soft"
+              placeholder="Verification time"
+              value={String(verificationPeriod)}
+              onChange={(e, val) => val && setVerificationPeriod(val)}
+              options={VerificationPeriods.map((period) => period.name)}
+              disableClearable
+            />
+          </Flex>
         </Flex>
       </Flex>
     );
