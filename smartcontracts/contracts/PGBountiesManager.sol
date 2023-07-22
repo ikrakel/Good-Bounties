@@ -6,10 +6,10 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 import "hardhat/console.sol";
-import {PGBountyState, IPGBountiesHandler} from "./interfaces/IPGBountiesHandler.sol";
+import {PGBountyState, Bounty, IPGBountiesHandler} from "./interfaces/IPGBountiesHandler.sol";
 import {DelegatedAttestationRequest, EASCustom} from "./eas/EASCustom.sol";
 
-contract BountyContract is ERC721URIStorage {
+contract PGBountiesManager is ERC721URIStorage, IPGBountiesHandler {
     error BountyDeadlineBeforeNow();
     error BountyDoesntExist();
     error BountyIsNotOpened();
@@ -23,57 +23,6 @@ contract BountyContract is ERC721URIStorage {
     error OnlyOwnerIsAuthorized();
     error OnlyStakingContractIsAuthorized();
     error BountyHasntExpiredYet();
-
-    struct Bounty {
-        uint256 tokenId;
-        uint256 submissionDeadline;
-        uint256 verificationPeriod;
-        uint256 submittedTime;
-        uint256 claimedTime;
-        address payable owner;
-        address payable contributor;
-        string attestationHash;
-        PGBountyState state;
-    }
-
-    event BountyCreated(
-        uint256 indexed tokenId,
-        address indexed owner,
-        PGBountyState state,
-        uint256 submissionDeadline,
-        uint256 verificationPeriod
-    );
-
-    event ProofSubmitted(
-        uint256 indexed tokenId,
-        address indexed contributor,
-        PGBountyState state,
-        string attestationHash
-    );
-
-    event ProofValidated(
-        uint256 indexed tokenId,
-        address indexed contributor,
-        PGBountyState state
-    );
-
-    event ProofDenied(
-        uint256 indexed tokenId,
-        address indexed contributor,
-        PGBountyState state
-    );
-
-    event BountyClaimed(
-        uint256 indexed tokenId,
-        address indexed contributor,
-        PGBountyState state
-    );
-
-    event BountyExpired(
-        uint256 indexed tokenId,
-        address indexed owner,
-        PGBountyState state
-    );
 
     using Counters for Counters.Counter;
 
@@ -89,11 +38,11 @@ contract BountyContract is ERC721URIStorage {
     }
 
     function openBounty(
-        uint256 submissionDeadline,
-        uint256 verificationPeriod,
-        string memory uri
+        uint256 _submissionDeadline,
+        uint256 _verificationPeriod,
+        string memory _uri
     ) external payable returns (uint256) {
-        if (submissionDeadline < block.timestamp)
+        if (_submissionDeadline < block.timestamp)
             revert BountyDeadlineBeforeNow();
 
         tokenIds.increment();
@@ -101,9 +50,9 @@ contract BountyContract is ERC721URIStorage {
         uint256 newTokenId = tokenIds.current();
 
         _safeMint(msg.sender, newTokenId);
-        _setTokenURI(newTokenId, uri);
+        _setTokenURI(newTokenId, _uri);
 
-        createBounty(newTokenId, submissionDeadline, verificationPeriod);
+        createBounty(newTokenId, _submissionDeadline, _verificationPeriod);
 
         return newTokenId;
     }
@@ -133,10 +82,10 @@ contract BountyContract is ERC721URIStorage {
 
     function validateProof(
         uint256 _bountyId,
-        DelegatedAttestationRequest calldata request
+        DelegatedAttestationRequest calldata _request
     ) external {
         _checksBeforeValidation(_bountyId);
-        eas.verifyAttest(request);
+        eas.verifyAttest(_request);
 
         Bounty storage bounty = idToBounties[_bountyId];
         bounty.state = PGBountyState.VALIDATED;
@@ -223,6 +172,12 @@ contract BountyContract is ERC721URIStorage {
         return idToBounties[_tokenId];
     }
 
+    function getState(uint256 _bountyId) external view returns (PGBountyState) {
+        Bounty memory bounty = idToBounties[_bountyId];
+        if (bounty.owner == address(0)) revert BountyDoesntExist();
+        return bounty.state;
+    }
+
     function setStakingContractAddress(address _stakingContract) external {
         //onlyOwner
         if (_stakingContract == address(0)) revert StakingContractIsZero();
@@ -266,4 +221,6 @@ contract BountyContract is ERC721URIStorage {
         bounty.state == PGBountyState.EXPIRED;
         emit BountyExpired(_bountyId, owner, PGBountyState.EXPIRED);
     }
+
+    function disputeBounty(uint256 _bountyId) external {}
 }
