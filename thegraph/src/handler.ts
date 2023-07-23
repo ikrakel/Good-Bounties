@@ -131,6 +131,7 @@ export function handleProofSubmitted(event: ProofSubmitted): void {
   let bounty = Bounty.load(event.params.tokenId.toString());
   if (bounty) {
     bounty.status = event.params.state.toString();
+    bounty.attestationHash = event.params.attestationHash;
     bounty.save();
   }
 }
@@ -155,6 +156,7 @@ export function handleProofDenied(event: ProofDenied): void {
   let bounty = Bounty.load(event.params.tokenId.toString());
   if (bounty) {
     bounty.status = event.params.state.toString();
+    bounty.attestationHash = "";
     bounty.save();
   }
 }
