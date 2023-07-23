@@ -12,4 +12,12 @@ export interface Bounty {
   deadline: number;
   criteria: string;
   description: string;
+  bountyStakers: BountyStaker[];
+}
+
+export interface BountyStaker {
+  amount: number;
+  staker: {
+    address: string;
+  };
 }

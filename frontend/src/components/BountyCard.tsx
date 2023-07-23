@@ -7,9 +7,11 @@ import { Favorite, LocationOn, ThumbUp, ThumbUpAlt } from "@mui/icons-material";
 import { differenceInDays, format } from "date-fns";
 import { Clickable } from "./css/Button";
 import { useNavigate } from "react-router-dom";
-import { Bounty } from "../models/Bounty.Model";
+import { Bounty, BountyStaker } from "../models/Bounty.Model";
 import { ethers } from "ethers";
 import { MATIC_PRICE } from "../data/Constants";
+import { Avatar, AvatarGroup, Tooltip } from "@mui/material";
+import { GetAvatar, displayEthers, displayInUSD, shortAddress } from "../utils/Utils";
 
 const stateToStatus = {
   0: "Open",
@@ -30,6 +32,7 @@ interface Props {
   submitterAvatar: string;
   deadline: Date;
   onClickDonate: () => void;
+  stakers: BountyStaker[];
 }
 
 export const BountyCard: FC<Props> = ({
@@ -44,6 +47,7 @@ export const BountyCard: FC<Props> = ({
   deadline,
   imageUrl: image,
   onClickDonate,
+  stakers,
 }) => {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -97,16 +101,15 @@ export const BountyCard: FC<Props> = ({
 
         <Flex x xsb>
           <Flex x yc gap1>
-            <Flex
-              sx={{
-                backgroundSize: "contain",
-                borderRadius: "100px",
-                width: "30px",
-                height: "30px",
-                backgroundImage: `url(${submitterAvatar})`,
-              }}
-            ></Flex>
-            <Text sx={{ fontSize: "0.8rem" }}>{submitterName}</Text>
+            <AvatarGroup max={4}>
+              {stakers.map((staker) => {
+                return (
+                  <Tooltip title={`$${displayInUSD(staker.amount)} donated by ${shortAddress(staker.staker.address)}`}>
+                    <Avatar variant="circular" alt={staker.staker.address} src={GetAvatar(staker.staker.address, 30)} />
+                  </Tooltip>
+                );
+              })}
+            </AvatarGroup>
           </Flex>
 
           <Flex x yc gap1 sx={{ color: theme.palette.neutral[600] }}>
@@ -116,14 +119,7 @@ export const BountyCard: FC<Props> = ({
         </Flex>
         <Flex x xsb ye>
           <Flex y sx={{ justifySelf: "flex-end" }}>
-            <Text sx={{ mt: 3, fontWeight: "bold", fontSize: "0.8rem" }}>
-              $
-              {(MATIC_PRICE * Number(ethers.utils.formatEther(prize))).toLocaleString("en-us", {
-                maximumSignificantDigits: 4,
-              })}{" "}
-              donated
-            </Text>
-
+            <Text sx={{ mt: 3, fontWeight: "bold", fontSize: "0.8rem" }}>${displayInUSD(prize)} donated</Text>
             <Flex x xsb yc>
               <Text
                 sx={{

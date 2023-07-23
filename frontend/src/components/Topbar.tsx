@@ -1,14 +1,13 @@
-import { Button, CircularProgress, Link, useTheme } from "@mui/joy";
+import { Avatar, Button, CircularProgress, Link, useTheme } from "@mui/joy";
 import { cloneElement, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Text } from "./Text";
 import { Flex } from "./Common/Flex";
 import { useWeb3Auth } from "../contexts/Web3AuthProvider";
-//@ts-expect-error
-import Identicon from "identicon.js";
 import { ADAPTER_STATUS } from "@web3auth/base";
 import { useGlobalContext } from "../contexts/GlobalContext";
 import logo from "../assets/logo.png";
+import { GetAvatar, shortAddress } from "../utils/Utils";
 
 export const Topbar = () => {
   const theme = useTheme();
@@ -34,10 +33,7 @@ export const Topbar = () => {
 
   const avatar = useMemo(() => {
     if (!address) return;
-
-    const icon = new Identicon(address, 50);
-    icon.background = [0, 0, 0, 0];
-    return "data:image/png;base64," + icon.toString();
+    return GetAvatar(address);
   }, [address]);
 
   useEffect(() => {
@@ -101,8 +97,8 @@ export const Topbar = () => {
             <CircularProgress sx={{ width: "100%" }} />
           ) : (
             <>
-              <img src={avatar} height="40px" alt="avatar" />
-              <Text sx={{ color: "white" }}>{`${address.slice(0, 6)}...${address.slice(-4)}`}</Text>
+              <Avatar src={avatar} />
+              <Text sx={{ color: "white" }}>{shortAddress(address)}</Text>
             </>
           )}
         </Flex>

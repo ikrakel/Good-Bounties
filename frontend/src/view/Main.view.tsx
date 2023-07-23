@@ -34,6 +34,14 @@ const GET_BOUNTIES = gql`
       imageUrl
       totalStakers
       totalStaked
+      bountyStakers {
+        id
+        amount
+        staker {
+          id
+          address
+        }
+      }
     }
   }
 `;
@@ -145,6 +153,7 @@ export const MainView = () => {
               createdBy={getShortWallet(bounty)}
               submitterAvatar={"https://i.pravatar.cc/50?u=" + bounty.submitterName}
               onClickDonate={() => setDonateModalBounty(bounty)}
+              stakers={bounty.bountyStakers}
             />
           </Grid>
         ))}

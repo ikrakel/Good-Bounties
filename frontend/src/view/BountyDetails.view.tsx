@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { Text } from "../components/Text";
 import { useMemo, useState, useEffect } from "react";
 import { Flex } from "../components/Common/Flex";
-import { Button, Chip, CircularProgress, Divider, Grid, Tab, TabList, TabPanel, Tabs, useTheme } from "@mui/joy";
+import { Button, CircularProgress, Divider, Grid, useTheme } from "@mui/joy";
 import { StatusColors, StatusEnum, StatusOptions } from "../models/StatusEnum";
 import { differenceInDays } from "date-fns";
 import { LocationOn } from "@mui/icons-material";
@@ -19,6 +19,8 @@ import { useWeb3Auth } from "../contexts/Web3AuthProvider";
 import { ValidateModal } from "../components/ValidateModal";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { SubmissionModal } from "../components/SubmissionModal";
+import { GetAvatar, displayInUSD, shortAddress } from "../utils/Utils";
+import { Avatar, AvatarGroup, Tooltip } from "@mui/material";
 
 const GET_BOUNTIES = gql`
   query GetBounty($tokenId: Int!) {
@@ -121,8 +123,22 @@ export const BountyDetailsView = () => {
               </Flex>
             </Grid>
             <Grid xs={6}>
-              <Flex y>
-                <Text sx={{ fontSize: "1.2rem" }}>{bounty.totalStakers}</Text>
+              <Flex xs y>
+                <AvatarGroup max={4}>
+                  {bounty.bountyStakers.map((staker) => {
+                    return (
+                      <Tooltip
+                        title={`$${displayInUSD(staker.amount)} donated by ${shortAddress(staker.staker.address)}`}
+                      >
+                        <Avatar
+                          variant="circular"
+                          alt={staker.staker.address}
+                          src={GetAvatar(staker.staker.address, 30)}
+                        />
+                      </Tooltip>
+                    );
+                  })}
+                </AvatarGroup>
                 <Text type="light">Donors</Text>
               </Flex>
             </Grid>
