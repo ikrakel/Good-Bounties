@@ -28,11 +28,11 @@ const ALL_BOUNTIES = [
     verificationPeriod: "24",
     uri: "ipfs://bafyreibcrm6gmilidhucb53b7avr5eufycyzinscoata22beiu5lmyalwa/metadata.json"
   },
-  { // 5
-    submissionDeadline: "2023-07-20",
-    verificationPeriod: "24",
-    uri: "ipfs://bafyreia33fx53vrvh4sa7gotg2kuoqlozrqtb5a7u3czpoxojp3t5cvc6a/metadata.json"
-  },
+  // { // 5
+  //   submissionDeadline: "2023-07-20",
+  //   verificationPeriod: "24",
+  //   uri: "ipfs://bafyreia33fx53vrvh4sa7gotg2kuoqlozrqtb5a7u3czpoxojp3t5cvc6a/metadata.json"
+  // },
   { // 6
     submissionDeadline: "2023-11-15",
     verificationPeriod: "24",
@@ -64,12 +64,15 @@ async function main() {
   console.log(`Creator is ${creator.address}`);
 
   const pgBountiesManager = new ethers.Contract(
-    "0x297CDC6d71a2e2321F76dadCDa939A1ffB22c2EC",
+    "0xeE735676e11E37544051Dec271964090D191f974",
     BountyContract.abi,
     provider
   );
 
   console.log(`Bounty Contract: ${pgBountiesManager.address}`);
+
+  // const bounty = await pgBountiesManager.fetchBounty(3);
+  // console.log(bounty);
   const start = dayjs().unix();
   const end = dayjs().add(1, "day").unix();
   const period = end - start;

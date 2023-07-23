@@ -17,7 +17,7 @@ interface Props {
   bounty: Bounty;
 }
 
-const PG_BOUNTIES_ADDRESS = "0x297CDC6d71a2e2321F76dadCDa939A1ffB22c2EC";
+const PG_BOUNTIES_ADDRESS = "0xeE735676e11E37544051Dec271964090D191f974";
 
 export const SubmissionModal: FC<Props> = ({ bounty, close }) => {
   const theme = useTheme();
