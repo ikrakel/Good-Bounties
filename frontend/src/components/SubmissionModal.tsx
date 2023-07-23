@@ -11,6 +11,8 @@ import { CIDString } from "nft.storage/dist/src/lib/interface";
 import { BigNumber, ethers } from "ethers";
 import { createContributorAttestation } from "../lib/eas/eas-offchain-attester";
 import PGBountiesManagerContract from "./abi/PGBountiesManager.json";
+import { toast } from "react-hot-toast";
+import { get, set } from "idb-keyval";
 
 interface Props {
   close: () => void;
@@ -26,7 +28,6 @@ export const SubmissionModal: FC<Props> = ({ bounty, close }) => {
   const [waitingForTransaction, setWaitingForTransaction] = useState(false);
   const [image, setImage] = useState<File>();
   const [description, setDescription] = useState("");
-  const [attestationHash, setAttestationHash] = useState<string>("");
 
   const submit = async () => {
     setWaitingForTransaction(true);
@@ -37,14 +38,18 @@ export const SubmissionModal: FC<Props> = ({ bounty, close }) => {
       console.log("attestation", attestation);
 
       const data = await uploadMetadata(image, attestation);
-      setAttestationHash(data.ipnft);
-      console.log("proof cid", data.ipnft);
+      const attestationHash = data.ipnft;
 
       // call the contract with data.ipnft
       const contract = new ethers.Contract(PG_BOUNTIES_ADDRESS, PGBountiesManagerContract, signer);
 
+      // set("image" + bounty.tokenId.toString(), image);
+      // set("description" + bounty.tokenId.toString(), description);
+
+      // console.log(attestationHash);
       const tx = await contract.connect(signer!).submitProof(BigNumber.from(bounty.tokenId), attestationHash);
       await tx.wait();
+      toast.success("Proof submitted successfully!");
     } else {
       console.log("Please upload image");
     }

@@ -21,6 +21,8 @@ import { useQueries, useQuery } from "@tanstack/react-query";
 import { SubmissionModal } from "../components/SubmissionModal";
 import { GetAvatar, displayInUSD, shortAddress } from "../utils/Utils";
 import { Avatar, AvatarGroup, Tooltip } from "@mui/material";
+import { NFTStorage } from "nft.storage";
+import { get, set } from "idb-keyval";
 
 const GET_BOUNTIES = gql`
   query GetBounty($tokenId: Int!) {
@@ -37,6 +39,8 @@ const GET_BOUNTIES = gql`
       imageUrl
       totalStakers
       totalStaked
+      attestationHash
+      contributor
       bountyStakers {
         id
         amount
@@ -64,6 +68,18 @@ export const BountyDetailsView = () => {
     const result = await execute(GET_BOUNTIES, { tokenId: Number(params.id) });
     return result?.data?.bounty as Bounty;
   });
+
+  const { data: attestation } = useQuery(
+    ["getAttestation", bounty?.tokenId],
+    async () => {
+      const image = new Blob(await get("image" + bounty?.tokenId.toString()));
+      const description = await get("description" + bounty?.tokenId.toString());
+      return { image: URL.createObjectURL(image), description };
+    },
+    { enabled: !!bounty?.tokenId }
+  );
+
+  console.log(attestation);
 
   const status = useMemo(() => {
     return StatusOptions.find((status) => status.id === bounty?.status)?.label;
@@ -204,7 +220,12 @@ export const BountyDetailsView = () => {
           </Flex>
         )}
 
-        {tab === 1 && <Flex>No submissions yet</Flex>}
+        {tab === 1 && (
+          <Flex y>
+            <Text>{attestation?.description}</Text>
+            <img src={attestation?.image} width="100%" />
+          </Flex>
+        )}
       </Flex>
     </>
   );

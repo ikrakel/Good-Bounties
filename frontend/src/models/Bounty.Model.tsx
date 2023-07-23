@@ -15,6 +15,8 @@ export interface Bounty {
   criteria: string;
   description: string;
   bountyStakers: BountyStaker[];
+  attestationHash: string;
+  contributor: string;
 }
 
 export interface BountyStaker {
