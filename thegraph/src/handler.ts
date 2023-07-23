@@ -1,4 +1,4 @@
-import { BigInt, ipfs, json } from "@graphprotocol/graph-ts"
+import { Bytes, BigInt, ipfs, json } from "@graphprotocol/graph-ts"
 import {
   StakeMade,
   StakeWithdrawn
@@ -131,6 +131,8 @@ export function handleProofSubmitted(event: ProofSubmitted): void {
   let bounty = Bounty.load(event.params.tokenId.toString());
   if (bounty) {
     bounty.status = event.params.state.toString();
+    bounty.attestationHash = event.params.attestationHash;
+    bounty.contributor = event.params.contributor;
     bounty.save();
   }
 }
@@ -155,6 +157,8 @@ export function handleProofDenied(event: ProofDenied): void {
   let bounty = Bounty.load(event.params.tokenId.toString());
   if (bounty) {
     bounty.status = event.params.state.toString();
+    bounty.attestationHash = "";
+    bounty.contributor = new Bytes(0);
     bounty.save();
   }
 }
