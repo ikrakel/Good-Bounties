@@ -21,14 +21,14 @@ GoodBounties is a platform where small actions compound into real-world impact. 
 ## Smart Contracts adresses
 
 - Polygon 
-  - BountyStakeContract.sol => TBD [Polygonscan](https://polygonscan.com/address/TBD)
-  - PGBountiesManager.sol => TBD [Polygonscan](https://polygonscan.com/address/TBD)
+  - BountyStakeContract.sol => 0x89733314f5466780E59516f4fb88B7d9B2044704 [Polygonscan](https://polygonscan.com/address/0x89733314f5466780E59516f4fb88B7d9B2044704)
+  - PGBountiesManager.sol => 0x03F1639eDc4F11fe7e028E9622B2e5d7B4b010Ac [Polygonscan](https://polygonscan.com/address/0x03F1639eDc4F11fe7e028E9622B2e5d7B4b010Ac)
 - Celo 
-  - BountyStakeContract.sol => TBD [Polygonscan](https://polygonscan.com/address/TBD)
-  - PGBountiesManager.sol => TBD [Polygonscan](https://polygonscan.com/address/TBD)
-- Gnosis 
-  - BountyStakeContract.sol => TBD [Polygonscan](https://polygonscan.com/address/TBD)
-  - PGBountiesManager.sol => TBD [Polygonscan](https://polygonscan.com/address/TBD)
+  - BountyStakeContract.sol => 0x146B4E0aC6C4A9dF94b8Da9E61886C68DbBC4140 [Celo Explorer](https://explorer.celo.org/mainnet/address/0x146B4E0aC6C4A9dF94b8Da9E61886C68DbBC4140)
+  - PGBountiesManager.sol => 0x629d4fa0D07c7e9Db1888fCE4acD4e159f3a9cB1 [Celo Explorer](https://explorer.celo.org/mainnet/address/0x629d4fa0D07c7e9Db1888fCE4acD4e159f3a9cB1)
+- Gnosis
+  - BountyStakeContract.sol => 0x75D7185C5C0a5F39b7c1560eDE56943a91bF2568 [Gnosisscan](https://gnosisscan.io/address/0x75D7185C5C0a5F39b7c1560eDE56943a91bF2568)
+  - PGBountiesManager.sol => 0xc8BBCEF15C9666AfEDA5f07A18885494f961da11 [Gnosisscan](https://gnosisscan.io/address/0xc8BBCEF15C9666AfEDA5f07A18885494f961da11)
 - Linea 
-  - BountyStakeContract.sol => TBD [Polygonscan](https://polygonscan.com/address/TBD)
-  - PGBountiesManager.sol => TBD [Polygonscan](https://polygonscan.com/address/TBD)
+  - BountyStakeContract.sol => TBD [Linea](https://explorer.goerli.linea.build/)
+  - PGBountiesManager.sol => TBD [Linea](https://explorer.goerli.linea.build/)
