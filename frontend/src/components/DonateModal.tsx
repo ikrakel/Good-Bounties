@@ -48,7 +48,7 @@ export const DonateModal: FC<Props> = ({ bounty, close }) => {
           <Divider />
           <Flex y>
             <Text type="caption">
-              {((rewardAmount / 100) * Number(walletBalance)).toLocaleString("en-us", { maximumSignificantDigits: 4 })}{" "}
+              {displayEthers(walletBalance?.div(100).mul(rewardAmount))}
               MATIC
             </Text>
             <Slider
@@ -60,7 +60,7 @@ export const DonateModal: FC<Props> = ({ bounty, close }) => {
                 { value: 0, label: "0" },
                 {
                   value: 50,
-                  label: (Number(walletBalance) / 2).toLocaleString("en-us", { maximumSignificantDigits: 4 }),
+                  label: displayEthers(walletBalance?.div(2)),
                 },
                 { value: 100, label: displayEthers(walletBalance) },
               ]}

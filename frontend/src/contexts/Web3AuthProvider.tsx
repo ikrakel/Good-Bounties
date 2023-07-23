@@ -63,7 +63,7 @@ interface Web3AuthContextType {
   signer?: ethers.providers.JsonRpcSigner;
   status: "connected" | "disconnected";
   signIn: () => Promise<void>;
-  walletBalance: string;
+  walletBalance?: ethers.BigNumber;
 }
 
 const Web3AuthContext = createContext<Web3AuthContextType>({
@@ -72,7 +72,7 @@ const Web3AuthContext = createContext<Web3AuthContextType>({
   signer: undefined,
   status: "disconnected",
   signIn: async () => {},
-  walletBalance: "0",
+  walletBalance: undefined,
 });
 
 export const Web3AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
@@ -81,7 +81,7 @@ export const Web3AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
   const [signer, setSigner] = useState<ethers.providers.JsonRpcSigner>();
   const [provider, setProvider] = useState<ethers.providers.Web3Provider>();
-  const [walletBalance, setWalletBalance] = useState("0");
+  const [walletBalance, setWalletBalance] = useState<ethers.BigNumber>();
 
   const { data: web3AuthModalPack } = useQuery(["getWeb3AuthModalPack"], async () => {
     // Instantiate and initialize the pack
@@ -102,7 +102,7 @@ export const Web3AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const balance = signer ? await provider?.getBalance(await signer.getAddress()) : undefined;
     setProvider(provider);
     setSigner(signer);
-    setWalletBalance(balance ? ethers.utils.formatEther(balance) : "");
+    setWalletBalance(balance);
   }, [web3AuthModalPack]);
 
   const walletStatusUpdated = useCallback(async () => {

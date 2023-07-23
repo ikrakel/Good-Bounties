@@ -1,3 +1,5 @@
+import { ethers } from "ethers";
+
 export interface Bounty {
   tokenId: number;
   imageUrl: string;
@@ -5,7 +7,7 @@ export interface Bounty {
   location: string;
   status: string;
   upvotesCount: number;
-  totalStaked: number;
+  totalStaked: string;
   totalStakers: number;
   createdBy: string;
   submitterAvatar: string;
@@ -16,7 +18,7 @@ export interface Bounty {
 }
 
 export interface BountyStaker {
-  amount: number;
+  amount: string;
   staker: {
     address: string;
   };

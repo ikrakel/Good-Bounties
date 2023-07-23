@@ -11,14 +11,19 @@ export const GetAvatar = (address: string, size = 40) => {
   return "data:image/png;base64," + icon.toString();
 };
 
-export const displayEthers = (amount: BigNumberish) => {
-  return Number(ethers.utils.formatEther(amount)).toLocaleString("en-us", { maximumSignificantDigits: 4 });
+export const displayEthers = (amount?: ethers.BigNumber | string) => {
+  if (typeof amount === "string") amount = ethers.BigNumber.from(amount);
+  if (!amount) return "0";
+  const remainder = amount.mod(1e14);
+  return ethers.utils.formatEther(amount.sub(remainder));
 };
 
-export const displayInUSD = (amount: BigNumberish) => {
-  return (MATIC_PRICE * Number(ethers.utils.formatEther(amount))).toLocaleString("en-us", {
-    maximumSignificantDigits: 4,
-  });
+export const displayInUSD = (amount: ethers.BigNumber | string) => {
+  if (typeof amount === "string") amount = ethers.BigNumber.from(amount);
+  if (!amount) return "0";
+  amount = amount.mul(MATIC_PRICE);
+  const remainder = amount.mod(1e15);
+  return ethers.utils.formatEther(amount.sub(remainder));
 };
 
 export const shortAddress = (address: string) => {

@@ -210,7 +210,7 @@ export const CreateBountyModal: FC<Props> = ({ createModalOpen, setCreateModalOp
               { value: 0, label: "0" },
               {
                 value: 50,
-                label: (Number(walletBalance) / 2).toLocaleString("en-us", { maximumSignificantDigits: 4 }),
+                label: displayEthers(walletBalance?.div(2)),
               },
               { value: 100, label: displayEthers(walletBalance) },
             ]}

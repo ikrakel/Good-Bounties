@@ -20,7 +20,7 @@ interface Props {
   location: string;
   status: string;
   upvotesCount: number;
-  totalStaked: number;
+  totalStaked: string;
   createdBy: string;
   deadline: Date;
   onClickDonate: () => void;
