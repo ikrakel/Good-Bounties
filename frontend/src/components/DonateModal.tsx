@@ -27,7 +27,9 @@ export const DonateModal: FC<Props> = ({ bounty, close }) => {
 
     const contract = new ethers.Contract(STAKING_ADDRESS, BountyStakeContract, signer);
 
-    const amount = ethers.utils.parseEther(((Number(rewardAmount) / 100) * Number(walletBalance)).toString());
+    if (!walletBalance) return;
+
+    const amount = walletBalance.div(100).mul(rewardAmount);
     const tx = await contract.connect(signer).stake(Number(bounty.tokenId), { value: amount });
     await tx.wait();
 
