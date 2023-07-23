@@ -12,6 +12,8 @@ type Bounty @entity {
   imageUrl: String! # loaded from IPFS
   totalStakers: BigInt! # total number of stakers
   totalStaked: BigInt! # total amount of ETH staked
+  attestationHash: String! # hash of the attestation
+  contributor: Bytes! # address of the contributor
   bountyStakers: [BountyStaker!]! @derivedFrom(field: "bounty")
 }
 
