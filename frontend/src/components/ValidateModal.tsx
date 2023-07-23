@@ -24,8 +24,12 @@ export const ValidateModal: FC<Props> = ({ bounty, close }) => {
 
     const contract = new ethers.Contract(PG_BOUNTIES_ADDRESS, PGBountiesManagerContract, signer);
 
-    const tx = await contract.connect(signer).validateProof(BigNumber.from(bounty.tokenId));
-    await tx.wait();
+    try {
+      const tx = await contract.connect(signer).validateProof(BigNumber.from(bounty.tokenId), { gasLimit: 100000 });
+      await tx.wait();
+    } catch (err) {
+      console.log("Validator sc error", err);
+    }
 
     close();
     setWaitingForTransaction(false);
@@ -37,7 +41,7 @@ export const ValidateModal: FC<Props> = ({ bounty, close }) => {
 
     const contract = new ethers.Contract(PG_BOUNTIES_ADDRESS, PGBountiesManagerContract, signer);
 
-    const tx = await contract.connect(signer).denyProof(BigNumber.from(bounty.tokenId));
+    const tx = await contract.connect(signer).denyProof(BigNumber.from(bounty.tokenId), { gasLimit: 100000 });
     await tx.wait();
 
     close();
