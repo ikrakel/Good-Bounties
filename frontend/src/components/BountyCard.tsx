@@ -127,17 +127,19 @@ export const BountyCard: FC<Props> = ({
               </Text>
             </Flex>
           </Flex>
-          <Button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onClickDonate();
-            }}
-            variant="soft"
-            color="success"
-          >
-            Donate
-          </Button>
+          {status === StatusEnum.Open && (
+            <Button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onClickDonate();
+              }}
+              variant="soft"
+              color="success"
+            >
+              Donate
+            </Button>
+          )}
         </Flex>
       </Flex>
     </Card>

@@ -7,6 +7,7 @@ import { useWeb3Auth } from "../contexts/Web3AuthProvider";
 import BountyStakeContract from "./abi/BountyStakeContract.json";
 import { Bounty } from "../models/Bounty.Model";
 import { toast } from "react-hot-toast";
+import { displayEthers } from "../utils/Utils";
 
 interface Props {
   bounty: Bounty;
@@ -61,7 +62,7 @@ export const DonateModal: FC<Props> = ({ bounty, close }) => {
                   value: 50,
                   label: (Number(walletBalance) / 2).toLocaleString("en-us", { maximumSignificantDigits: 4 }),
                 },
-                { value: 100, label: Number(walletBalance).toLocaleString("en-us", { maximumSignificantDigits: 4 }) },
+                { value: 100, label: displayEthers(walletBalance) },
               ]}
             />
           </Flex>

@@ -166,15 +166,21 @@ export const BountyDetailsView = () => {
               </Flex>
             </Grid>
             <Grid xs={12} display="flex" columnGap={2}>
-              <Button variant="soft" color="success" onClick={() => setDonateModal(bounty)}>
-                Donate
-              </Button>
-              <Button onClick={() => setSubmitModal(bounty)}>Submit</Button>
-              {/* //TODO: HIDE ONE */}
-              <Button onClick={() => setValidateModal(bounty)}>Validate</Button>
-              <Button color="success" variant="outlined" onClick={() => setClaimModal(bounty)}>
-                Claim
-              </Button>
+              {bounty.status === StatusEnum.Open && (
+                <Button variant="soft" color="success" onClick={() => setDonateModal(bounty)}>
+                  Donate
+                </Button>
+              )}
+
+              {bounty.status === StatusEnum.Open && <Button onClick={() => setSubmitModal(bounty)}>Submit</Button>}
+              {bounty.status === StatusEnum.Submitted && (
+                <Button onClick={() => setValidateModal(bounty)}>Validate</Button>
+              )}
+              {bounty.status === StatusEnum.Validated && (
+                <Button color="success" variant="outlined" onClick={() => setClaimModal(bounty)}>
+                  Claim
+                </Button>
+              )}
             </Grid>
           </Grid>
         </Grid>

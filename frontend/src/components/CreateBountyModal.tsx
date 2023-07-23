@@ -28,6 +28,7 @@ import { Clickable } from "./css/Button";
 import { VerificationPeriods } from "../data/VerificationPeriod";
 import { CIDString } from "nft.storage/dist/src/lib/interface";
 import { uploadMetadata } from "../utils/IpfsUtils";
+import { displayEthers } from "../utils/Utils";
 
 interface Props {
   createModalOpen: boolean;
@@ -207,8 +208,11 @@ export const CreateBountyModal: FC<Props> = ({ createModalOpen, setCreateModalOp
             max={100}
             marks={[
               { value: 0, label: "0" },
-              { value: 50, label: Number(walletBalance) / 2 },
-              { value: 100, label: walletBalance },
+              {
+                value: 50,
+                label: (Number(walletBalance) / 2).toLocaleString("en-us", { maximumSignificantDigits: 4 }),
+              },
+              { value: 100, label: displayEthers(walletBalance) },
             ]}
           />
         </Flex>

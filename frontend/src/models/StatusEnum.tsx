@@ -17,10 +17,12 @@ export const StatusLabelToEnum = {
 };
 
 export enum StatusEnum {
-  Open = "Open",
-  Submitted = "Submitted",
-  Expired = "Expired",
-  Completed = "Completed",
+  Open = "0",
+  Submitted = "1",
+  Validated = "2",
+  Disputed = "3",
+  Claimed = "4",
+  Expired = "5",
 }
 
 export const StatusColors = {
