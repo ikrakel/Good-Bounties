@@ -138,7 +138,7 @@ export const MainView = () => {
           mb: -4,
         }}
       >
-        {filteredBounties.map((bounty: any, i) => (
+        {filteredBounties.map((bounty: Bounty, i) => (
           <Grid xs={4}>
             <BountyCard
               tokenId={bounty.tokenId}
@@ -151,7 +151,6 @@ export const MainView = () => {
               status={bounty.status}
               upvotesCount={0}
               createdBy={getShortWallet(bounty)}
-              submitterAvatar={"https://i.pravatar.cc/50?u=" + bounty.submitterName}
               onClickDonate={() => setDonateModalBounty(bounty)}
               stakers={bounty.bountyStakers}
             />

@@ -97,7 +97,7 @@ export const BountyDetailsView = () => {
       )}
       {claimModal && <ClaimModal bounty={bounty} close={() => setClaimModal(undefined)} />}
       {validateModal && <ValidateModal bounty={bounty} close={() => setValidateModal(undefined)} />}
-      <Flex y gap3>
+      <Flex y ye gap3>
         <Text sx={{ textAlign: "center" }} type="header">
           {bounty.title}
         </Text>
@@ -111,6 +111,15 @@ export const BountyDetailsView = () => {
                 ◉ {status}
               </Text>
             </Grid>
+            {/* <Grid xs={6}>
+              <Flex y>
+                <Flex x yc gap2>
+                  <Avatar variant="circular" alt={bounty.createdBy} src={GetAvatar(bounty.createdBy, 30)} />
+                  <Text>{shortAddress(bounty.createdBy)}</Text>
+                </Flex>
+                <Text type="light">Created by</Text>
+              </Flex>
+            </Grid> */}
             <Grid xs={6}>
               <Flex y>
                 <Text color="success" type="body" sx={{ fontSize: "1.5rem" }}>

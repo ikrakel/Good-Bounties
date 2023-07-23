@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { Flex } from "./Common/Flex";
-import { StatusColors, StatusEnum } from "../models/StatusEnum";
+import { StatusColors, StatusEnum, StatusOptions } from "../models/StatusEnum";
 import { Text } from "./Text";
 import { Button, Card, Divider, useTheme } from "@mui/joy";
 import { Favorite, LocationOn, ThumbUp, ThumbUpAlt } from "@mui/icons-material";
@@ -13,23 +13,15 @@ import { MATIC_PRICE } from "../data/Constants";
 import { Avatar, AvatarGroup, Tooltip } from "@mui/material";
 import { GetAvatar, displayEthers, displayInUSD, shortAddress } from "../utils/Utils";
 
-const stateToStatus = {
-  0: "Open",
-  1: "Submitted",
-  2: "Expired",
-  3: "Completed",
-};
-
 interface Props {
   tokenId: number;
   imageUrl: string;
   title: string;
   location: string;
-  status: number;
+  status: string;
   upvotesCount: number;
   totalStaked: number;
   createdBy: string;
-  submitterAvatar: string;
   deadline: Date;
   onClickDonate: () => void;
   stakers: BountyStaker[];
@@ -40,7 +32,6 @@ export const BountyCard: FC<Props> = ({
   location,
   totalStaked: prize,
   status,
-  submitterAvatar,
   createdBy: submitterName,
   title,
   upvotesCount,
@@ -51,6 +42,8 @@ export const BountyCard: FC<Props> = ({
 }) => {
   const theme = useTheme();
   const navigate = useNavigate();
+
+  const foundStatus = StatusOptions.find((s) => s.id === status)?.label;
 
   return (
     <Card
@@ -75,8 +68,9 @@ export const BountyCard: FC<Props> = ({
         }}
       >
         <Flex sx={{ borderRadius: "5px", p: 0.8, backgroundColor: theme.palette.background.body, mt: 1, ml: 1 }}>
-          {/* @ts-ignore */}
-          <Text sx={{ color: StatusColors[status], fontSize: "0.8rem" }}>◉ {stateToStatus[status]}</Text>
+          <Text sx={{ color: StatusColors[status as keyof typeof StatusColors], fontSize: "0.8rem" }}>
+            ◉ {foundStatus}
+          </Text>
         </Flex>
 
         <Flex
