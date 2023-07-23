@@ -10,10 +10,10 @@ const createContributorAttestation = async (
   imageCid: string,
   description: string
 ): Promise<OffchainAttestationParams> => {
-  const eas = new EAS("0xC2679fBD37d54388Ce493F1DB75320D236e1815e");
-  eas.connect(signer.provider);
+  // const eas = new EAS("0xC2679fBD37d54388Ce493F1DB75320D236e1815e");
+  // eas.connect(signer.provider);
 
-  const offchain: Offchain = await eas.getOffchain();
+  // const offchain: Offchain = await eas.getOffchain();
 
   // Initialize SchemaEncoder with the schema string
   const schemaEncoder = new SchemaEncoder("bytes32 imageCid, string description");

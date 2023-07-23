@@ -34,9 +34,11 @@ export const SubmissionModal: FC<Props> = ({ bounty, close }) => {
     if (image) {
       const imageCid = "";
       const attestation = await createContributorAttestation(signer!, bounty.createdBy, imageCid, description);
+      console.log("attestation", attestation);
 
       const data = await uploadMetadata(image, attestation);
       setAttestationHash(data.ipnft);
+      console.log("proof cid", data.ipnft);
 
       // call the contract with data.ipnft
       const contract = new ethers.Contract(PG_BOUNTIES_ADDRESS, PGBountiesManagerContract, signer);
